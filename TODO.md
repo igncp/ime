@@ -1,2 +1,6 @@
-- Be able to listen to key events via ibus
+- [x] Be able to listen to key events via ibus
     - Learn well the napi usage
+- [ ] Expose important engine methods: https://ibus.github.io/docs/ibus-1.5/IBusEngine.html
+    - Also start with the lookup table: https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html
+    - Create practical tests to learn the usage
+- [ ] Continue drafting the flow and separating concerns

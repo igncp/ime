@@ -1,18 +1,11 @@
 const addon = require("../build/Release/module_03");
 
-// This poc is not working because it is not possible to save a reference to a
-// function in this way
+addon.registerGlobalFn(() => {
+  console.log("Inside cb");
+});
 
-const obj = {
-  fn: () => {
-    console.log("Inside obj.fn");
-  },
-};
+console.log("Before callRegisteredGlobalFn");
 
-const main = () => {
-  addon.registerGlobalFn(obj);
+addon.callRegisteredGlobalFn();
 
-  addon.callRegisteredGlobalFn();
-};
-
-main();
+console.log("After callRegisteredGlobalFn");

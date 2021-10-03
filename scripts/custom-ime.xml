@@ -11,11 +11,10 @@
   <engines>
     <engine>
       <name>custom-ime</name>
-      <language>ru</language>
+      <language>fr</language>
       <license>GPL</license>
       <author>Ignacio</author>
-      <!-- @TODO: Change this -->
-      <icon>/usr/share/ibus-rime/icons/rime.png</icon>
+      <icon>/usr/share/icons/ContrastHigh/24x24/places/user-home.png</icon>
       <layout>default</layout>
       <longname>Custom IME</longname>
       <description>Custom IME</description>
