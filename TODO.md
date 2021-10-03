@@ -1,0 +1,2 @@
+- Be able to listen to key events via ibus
+    - Learn well the napi usage

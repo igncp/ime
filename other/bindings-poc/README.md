@@ -1,0 +1,3 @@
+- Guide: https://nodejs.github.io/node-addon-examples/
+- https://github.com/nodejs/node-addon-examples
+- https://github.com/nodejs/node-addon-api/tree/main/doc

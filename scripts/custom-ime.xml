@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <name>im.custom-ime.CustomIme</name>
+  <description>Custom Ime Component</description>
+  <exec>/home/igncp/development/ime/scripts/custom_ime</exec>
+  <version>1.0</version>
+  <author>Ignacio</author>
+  <license>GPL</license>
+  <homepage>https://ignaciocarbajo.com</homepage>
+  <textdomain>custom-ime</textdomain>
+  <engines>
+    <engine>
+      <name>custom-ime</name>
+      <language>ru</language>
+      <license>GPL</license>
+      <author>Ignacio</author>
+      <!-- @TODO: Change this -->
+      <icon>/usr/share/ibus-rime/icons/rime.png</icon>
+      <layout>default</layout>
+      <longname>Custom IME</longname>
+      <description>Custom IME</description>
+      <rank>0</rank>
+      <symbol>&#x37A2;</symbol>
+    </engine>
+  </engines>
+</component>

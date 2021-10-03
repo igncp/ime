@@ -1,0 +1,13 @@
+{
+  "name": "ime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ibus": "file:local_packages/ibus",
+    "libnotify": "file:local_packages/libnotify"
+  }
+}
