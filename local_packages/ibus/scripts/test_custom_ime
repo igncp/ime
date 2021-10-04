@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+echo "Starting ibus test"
+
+# @TODO
+cd /home/igncp/development/ime/local_packages/ibus/
+
+node test/main.js

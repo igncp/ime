@@ -8,6 +8,8 @@
 typedef struct ImeHandlers
 {
     napi_env env;
+    napi_ref disable;
+    napi_ref enable;
     napi_ref key_event;
 } ImeHandlers;
 
@@ -16,6 +18,7 @@ typedef struct _IBusCustomImeEngineClass IBusCustomImeEngineClass;
 
 extern ImeHandlers ime_handlers;
 extern IBusCustomImeEngine custom_ime_engine;
+extern IBusLookupTable * custom_ime_lookup_table;
 
 void ibus_disconnect_cb(IBusBus *bus, gpointer user_data);
 

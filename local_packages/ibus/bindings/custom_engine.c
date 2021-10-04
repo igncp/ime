@@ -1,7 +1,5 @@
 #include "custom_engine.h"
 
-GType ibus_custom_ime_engine_get_type();
-
 struct _IBusCustomImeEngineClass
 {
     IBusEngineClass parent;
@@ -17,8 +15,9 @@ struct _IBusCustomImeEngine
 static void ibus_custom_ime_engine_class_init (IBusCustomImeEngineClass *klass);
 static void ibus_custom_ime_engine_init (IBusCustomImeEngine *custom_ime_engine);
 
-ImeHandlers ime_handlers = { .key_event = NULL, .env = NULL };
+ImeHandlers ime_handlers = { .key_event = NULL, .env = NULL, .enable = NULL };
 IBusCustomImeEngine custom_ime_engine;
+IBusLookupTable * custom_ime_lookup_table;
 
 G_DEFINE_TYPE (IBusCustomImeEngine, ibus_custom_ime_engine, IBUS_TYPE_ENGINE)
 
@@ -26,6 +25,26 @@ void ibus_disconnect_cb(IBusBus *bus, gpointer user_data)
 {
     g_debug("bus disconnected");
     ibus_quit();
+}
+
+static void ibus_custom_ime_engine_disable (IBusEngine *engine)
+{
+    napi_value cb;
+    napi_get_reference_value(ime_handlers.env, ime_handlers.disable, &cb);
+
+    napi_value global;
+    napi_get_global(ime_handlers.env, &global);
+    napi_call_function(ime_handlers.env, global, cb, 0, NULL, NULL);
+}
+
+static void ibus_custom_ime_engine_enable (IBusEngine *engine)
+{
+    napi_value cb;
+    napi_get_reference_value(ime_handlers.env, ime_handlers.enable, &cb);
+
+    napi_value global;
+    napi_get_global(ime_handlers.env, &global);
+    napi_call_function(ime_handlers.env, global, cb, 0, NULL, NULL);
 }
 
 static gboolean ibus_custom_ime_engine_process_key_event (
@@ -71,6 +90,8 @@ static void ibus_custom_ime_engine_class_init (IBusCustomImeEngineClass *klass)
 
     printf("ibus_custom_ime_engine_class_init \n");
 
+    engine_class->disable = ibus_custom_ime_engine_disable;
+    engine_class->enable = ibus_custom_ime_engine_enable;
     engine_class->process_key_event = ibus_custom_ime_engine_process_key_event;
 }
 
@@ -79,4 +100,7 @@ static void ibus_custom_ime_engine_init (IBusCustomImeEngine * _custom_ime_engin
     printf("ibus_custom_ime_engine_init \n");
 
     custom_ime_engine = *_custom_ime_engine;
+
+    custom_ime_lookup_table = ibus_lookup_table_new(9, 0, TRUE, FALSE);
+    g_object_ref_sink(custom_ime_lookup_table);
 }
