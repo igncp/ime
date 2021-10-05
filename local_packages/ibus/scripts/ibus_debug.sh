@@ -4,4 +4,4 @@ set -e
 
 killall ibus-daemon || true
 
-ibus-daemon -rv
+tmux split-window "ibus-daemon -rv"

@@ -228,6 +228,125 @@ napi_value LookupTableClear(napi_env env, napi_callback_info info)
     RETURN_UNDEFINED;
 }
 
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-cursor-down
+napi_value LookupTableCursorDown(napi_env env, napi_callback_info info)
+{
+    ibus_lookup_table_cursor_down(custom_ime_lookup_table);
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-cursor-up
+napi_value LookupTableCursorUp(napi_env env, napi_callback_info info)
+{
+    ibus_lookup_table_cursor_up(custom_ime_lookup_table);
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-get-cursor-pos
+napi_value LookupTableGetCursorPos(napi_env env, napi_callback_info info)
+{
+    guint cursor_pos = ibus_lookup_table_get_cursor_pos(custom_ime_lookup_table);
+
+    napi_value cursor_pos_value;
+    napi_create_uint32(env, cursor_pos, &cursor_pos_value);
+    return cursor_pos_value;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-get-number-of-candidates
+napi_value LookupTableGetNumberOfCandidates(napi_env env, napi_callback_info info)
+{
+    guint candidates_num = ibus_lookup_table_get_number_of_candidates(custom_ime_lookup_table);
+
+    napi_value candidates_num_value;
+    napi_create_uint32(env, candidates_num, &candidates_num_value);
+    return candidates_num_value;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-get-page-size
+napi_value LookupTableGetPageSize(napi_env env, napi_callback_info info)
+{
+    guint page_size = ibus_lookup_table_get_page_size(custom_ime_lookup_table);
+
+    napi_value page_size_value;
+    napi_create_uint32(env, page_size, &page_size_value);
+    return page_size_value;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-page-down
+napi_value LookupTablePageDown(napi_env env, napi_callback_info info)
+{
+    ibus_lookup_table_page_down(custom_ime_lookup_table);
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-page-up
+napi_value LookupTablePageUp(napi_env env, napi_callback_info info)
+{
+    ibus_lookup_table_page_up(custom_ime_lookup_table);
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-set-cursor-pos
+napi_value LookupTableSetCursorPos(napi_env env, napi_callback_info info)
+{
+    size_t argc = 1;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    guint32 cursor_pos;
+    napi_get_value_uint32(env, args[0], &cursor_pos);
+
+    ibus_lookup_table_set_cursor_pos(custom_ime_lookup_table, cursor_pos);
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-set-label
+napi_value LookupTableSetLabel(napi_env env, napi_callback_info info)
+{
+    size_t argc = 2;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    guint32 position;
+    napi_get_value_uint32(env, args[0], &position);
+
+    size_t str_size;
+    napi_get_value_string_utf8(env, args[1], NULL, 0, &str_size);
+    str_size += 1;
+
+    char *text_opt  = (char*)calloc(str_size + 1, sizeof(char));
+    size_t str_size_read;
+    napi_get_value_string_utf8(env, args[1], text_opt, str_size, &str_size_read);
+
+    IBusText *text = ibus_text_new_from_string(text_opt);
+
+    ibus_lookup_table_set_label(custom_ime_lookup_table, position, text);
+
+    free(text_opt);
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-set-page-size
+napi_value LookupTableSetPageSize(napi_env env, napi_callback_info info)
+{
+    size_t argc = 1;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    guint32 page_size;
+    napi_get_value_uint32(env, args[0], &page_size);
+
+    ibus_lookup_table_set_page_size(custom_ime_lookup_table, page_size);
+
+    RETURN_UNDEFINED;
+}
+
 // https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-set-orientation
 napi_value LookupTableSetOrientation(napi_env env, napi_callback_info info)
 {
@@ -235,6 +354,15 @@ napi_value LookupTableSetOrientation(napi_env env, napi_callback_info info)
         custom_ime_lookup_table,
         IBUS_ORIENTATION_VERTICAL /* @TODO */
     );
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-set-round
+napi_value LookupTableSetRound(napi_env env, napi_callback_info info)
+{
+    /* @TODO */
+    ibus_lookup_table_set_round(custom_ime_lookup_table, TRUE);
 
     RETURN_UNDEFINED;
 }
@@ -270,25 +398,36 @@ napi_value RegisterHandlers(napi_env env, napi_callback_info info)
 
 napi_value MainModule(napi_env env, napi_value exports)
 {
+    napi_value fn;
 
-#define NODE_EXPOSE_FN(FnName, fn_name, keyName) \
-    napi_value fn_name; \
-    napi_create_function(env, NULL, 0, FnName, NULL, &fn_name); \
-    napi_set_named_property(env, exports, keyName, fn_name);
+#define NODE_EXPOSE_FN(FnName, keyName) \
+    napi_create_function(env, NULL, 0, FnName, NULL, &fn); \
+    napi_set_named_property(env, exports, keyName, fn);
 
-    NODE_EXPOSE_FN(EngineCommitText, fn_engine_commit_text, "engineCommitText");
-    NODE_EXPOSE_FN(EngineHideLookupTable, fn_engine_hide_lookup_table, "engineHideLookupTable");
-    NODE_EXPOSE_FN(EngineShowAuxiliaryText, fn_engine_show_auxiliary_text, "engineShowAuxiliaryText");
-    NODE_EXPOSE_FN(EngineShowLookupTable, fn_engine_show_lookup_table, "engineShowLookupTable");
-    NODE_EXPOSE_FN(EngineUpdateAuxiliaryText, fn_engine_update_auxiliary_text, "engineUpdateAuxiliaryText");
-    NODE_EXPOSE_FN(EngineUpdateLookupTable, fn_engine_update_lookup_table, "engineUpdateLookupTable");
-    NODE_EXPOSE_FN(EngineUpdatePreeditText, fn_engine_update_preedit_text, "engineUpdatePreeditText");
-    NODE_EXPOSE_FN(Init, fn_init, "init");
-    NODE_EXPOSE_FN(LookupTableAppendCandidate, fn_lookup_table_append_candidate, "lookupTableAppendCandidate");
-    NODE_EXPOSE_FN(LookupTableClear, fn_lookup_table_clear, "lookupTableClear");
-    NODE_EXPOSE_FN(LookupTableSetOrientation, fn_lookup_table_set_orientation, "lookupTableSetOrientation");
-    NODE_EXPOSE_FN(Main, fn_main, "main");
-    NODE_EXPOSE_FN(RegisterHandlers, fn_register_handlers, "registerHandlers");
+    NODE_EXPOSE_FN(EngineCommitText, "engineCommitText");
+    NODE_EXPOSE_FN(EngineHideLookupTable, "engineHideLookupTable");
+    NODE_EXPOSE_FN(EngineShowAuxiliaryText, "engineShowAuxiliaryText");
+    NODE_EXPOSE_FN(EngineShowLookupTable, "engineShowLookupTable");
+    NODE_EXPOSE_FN(EngineUpdateAuxiliaryText, "engineUpdateAuxiliaryText");
+    NODE_EXPOSE_FN(EngineUpdateLookupTable, "engineUpdateLookupTable");
+    NODE_EXPOSE_FN(EngineUpdatePreeditText, "engineUpdatePreeditText");
+    NODE_EXPOSE_FN(Init, "init");
+    NODE_EXPOSE_FN(LookupTableAppendCandidate, "lookupTableAppendCandidate");
+    NODE_EXPOSE_FN(LookupTableClear, "lookupTableClear");
+    NODE_EXPOSE_FN(LookupTableCursorDown, "lookupTableCursorDown");
+    NODE_EXPOSE_FN(LookupTableCursorUp, "lookupTableCursorUp");
+    NODE_EXPOSE_FN(LookupTableGetCursorPos, "lookupTableGetCursorPos");
+    NODE_EXPOSE_FN(LookupTableGetNumberOfCandidates, "lookupTableGetNumberOfCandidates");
+    NODE_EXPOSE_FN(LookupTableGetPageSize, "lookupTableGetPageSize");
+    NODE_EXPOSE_FN(LookupTablePageDown, "lookupTablePageDown");
+    NODE_EXPOSE_FN(LookupTablePageUp, "lookupTablePageUp");
+    NODE_EXPOSE_FN(LookupTableSetCursorPos, "lookupTableSetCursorPos");
+    NODE_EXPOSE_FN(LookupTableSetLabel, "lookupTableSetLabel");
+    NODE_EXPOSE_FN(LookupTableSetOrientation, "lookupTableSetOrientation");
+    NODE_EXPOSE_FN(LookupTableSetPageSize, "lookupTableSetPageSize");
+    NODE_EXPOSE_FN(LookupTableSetRound, "lookupTableSetRound");
+    NODE_EXPOSE_FN(Main, "main");
+    NODE_EXPOSE_FN(RegisterHandlers, "registerHandlers");
 
     return exports;
 }

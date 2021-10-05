@@ -17,10 +17,6 @@
         - ibus_engine_update_property
         - ibus_factory_add_engine
         - ibus_factory_new
-        - ibus_lookup_table_set_cursor_pos
-        - ibus_lookup_table_set_label
-        - ibus_lookup_table_set_page_size
-        - ibus_lookup_table_set_round
         - ibus_object_class
         - ibus_property_new
         - ibus_property_set_icon
@@ -39,6 +35,5 @@
         - ibus_text_new_from_unichar
 - [ ] Improve key detection
 - [ ] Resolve TODOs in module
-- [ ] Use different approach of `runWithCatch`
 - [ ] Far down the line: use `status` in C methods to check for errors
 - [ ] Continue drafting the flow and separating concerns
