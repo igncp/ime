@@ -1,8 +1,10 @@
 Proof of concept of an IME (Input Method Editor) for IBus written in JS
 
-Using [Rime](https://github.com/rime/ibus-rime) as the base for the setup
+Using [ibus-rime](https://github.com/rime/ibus-rime) as a reference for the IBus integration
 
-This is WIP and in a very early stage. The current objectives are:
+This project is WIP and in a very early stage. The current objectives are:
 
-- Create Node.js bindings for [ibus](https://github.com/ibus/ibus) (for Linux) which is written in C
-- Have a proof of concept of IME with very few features using IBus and Rime configuration files and dictionaries
+1. Create Node.js bindings for [IBus](https://github.com/ibus/ibus) which is written in C
+    - IBus is intended for Linux
+1. Have a proof of concept of an IME with very few features using IBus
+    - The target is that in the future it can support Rime configuration files and dictionaries

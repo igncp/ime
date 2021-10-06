@@ -1,4 +1,5 @@
 const addon = require("../build/Release/module");
+const { IBusModifierType, KeyCodes, KeyEventReturn } = require("./constants");
 
 const runWithCatch = (fn) => {
   try {
@@ -8,18 +9,6 @@ const runWithCatch = (fn) => {
     console.log("index.js: error", e);
     throw e;
   }
-};
-
-// https://ibus.github.io/docs/ibus-1.4/ibus-ibustypes.html#IBusModifierType-enum
-const IBusModifierType = {
-  IBUS_RELEASE_MASK: 1 << 30,
-};
-
-const KeyCodes = {
-  DOWN: 108,
-  PAGE_DOWN: 109,
-  PAGE_UP: 104,
-  UP: 103,
 };
 
 const engineCommitText = (text) => {
@@ -34,6 +23,12 @@ const engineHideLookupTable = () => {
   });
 };
 
+const engineHidePreeditText = () => {
+  runWithCatch(() => {
+    addon.engineHidePreeditText();
+  });
+};
+
 const engineShowAuxiliaryText = () => {
   runWithCatch(() => {
     addon.engineShowAuxiliaryText();
@@ -43,6 +38,12 @@ const engineShowAuxiliaryText = () => {
 const engineShowLookupTable = () => {
   runWithCatch(() => {
     addon.engineShowLookupTable();
+  });
+};
+
+const engineShowPreeditText = () => {
+  runWithCatch(() => {
+    addon.engineShowPreeditText();
   });
 };
 
@@ -62,9 +63,9 @@ const engineUpdateLookupTable = (isVisible) => {
   });
 };
 
-const engineUpdatePreeditText = (text) => {
+const engineUpdatePreeditText = (text, cursorPos, isVisible) => {
   runWithCatch(() => {
-    addon.engineUpdatePreeditText(text);
+    addon.engineUpdatePreeditText(text, cursorPos, isVisible);
   });
 };
 
@@ -101,6 +102,7 @@ const registerHandlers = (handlers) => {
     handlersObj[handlerName] = (...args) => {
       return runWithCatch(() => handlers[handlerName](...args));
     };
+
     return handlersObj;
   }, {});
 
@@ -108,7 +110,15 @@ const registerHandlers = (handlers) => {
 };
 
 const isReleasedKey = (keyInfo) => {
-  return keyInfo.modifiers & IBusModifierType.IBUS_RELEASE_MASK;
+  return (keyInfo.modifiers & IBusModifierType.IBUS_RELEASE_MASK) !== 0;
+};
+
+const isKeyWithCtrl = (keyInfo) => {
+  return (keyInfo.modifiers & IBusModifierType.IBUS_CONTROL_MASK) !== 0;
+};
+
+const isKeyWithShift = (keyInfo) => {
+  return (keyInfo.modifiers & IBusModifierType.IBUS_SHIFT_MASK) !== 0;
 };
 
 const lookupTableAppendCandidate = (text) => {
@@ -190,7 +200,11 @@ const lookupTableSetPageSize = (pageSize) => {
 };
 
 const helpers = {
+  IBusModifierType,
   KeyCodes,
+  KeyEventReturn,
+  isKeyWithCtrl,
+  isKeyWithShift,
   isReleasedKey,
 };
 
@@ -203,8 +217,10 @@ const lookupTableSetRound = () => {
 module.exports = {
   engineCommitText,
   engineHideLookupTable,
+  engineHidePreeditText,
   engineShowAuxiliaryText,
   engineShowLookupTable,
+  engineShowPreeditText,
   engineUpdateAuxiliaryText,
   engineUpdateLookupTable,
   engineUpdatePreeditText,

@@ -5,6 +5,8 @@
 #include <glib/gstdio.h>
 #include <ibus.h>
 
+// https://ibus.github.io/docs/ibus-1.5/index.html
+
 typedef struct ImeHandlers
 {
     napi_env env;

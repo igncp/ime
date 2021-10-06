@@ -45,6 +45,14 @@ napi_value EngineHideLookupTable(napi_env env, napi_callback_info info)
     RETURN_UNDEFINED;
 }
 
+// https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-hide-preedit-text
+napi_value EngineHidePreeditText(napi_env env, napi_callback_info info)
+{
+    ibus_engine_hide_lookup_table((IBusEngine *) &custom_ime_engine);
+
+    RETURN_UNDEFINED;
+}
+
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-show-auxiliary-text
 napi_value EngineShowAuxiliaryText(napi_env env, napi_callback_info info)
 {
@@ -57,6 +65,14 @@ napi_value EngineShowAuxiliaryText(napi_env env, napi_callback_info info)
 napi_value EngineShowLookupTable(napi_env env, napi_callback_info info)
 {
     ibus_engine_show_lookup_table((IBusEngine *) &custom_ime_engine);
+
+    RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-show-preedit-text
+napi_value EngineShowPreeditText(napi_env env, napi_callback_info info)
+{
+    ibus_engine_show_preedit_text((IBusEngine *) &custom_ime_engine);
 
     RETURN_UNDEFINED;
 }
@@ -111,7 +127,7 @@ napi_value EngineUpdateLookupTable(napi_env env, napi_callback_info info)
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-update-preedit-text
 napi_value EngineUpdatePreeditText(napi_env env, napi_callback_info info)
 {
-    size_t argc = 1;
+    size_t argc = 3;
     napi_value args[argc];
     napi_get_cb_info(env, info, &argc, args, NULL, NULL);
 
@@ -125,11 +141,17 @@ napi_value EngineUpdatePreeditText(napi_env env, napi_callback_info info)
 
     IBusText *text = ibus_text_new_from_string(text_opt);
 
+    guint32 cursor_pos;
+    napi_get_value_uint32(env, args[1], &cursor_pos);
+
+    bool is_visible;
+    napi_get_value_bool(env, args[2], &is_visible);
+
     ibus_engine_update_preedit_text(
         (IBusEngine *) &custom_ime_engine,
         text,
-        0, /* @TODO */
-        TRUE /* @TODO */
+        cursor_pos,
+        is_visible
     );
 
     free(text_opt);
@@ -361,8 +383,14 @@ napi_value LookupTableSetOrientation(napi_env env, napi_callback_info info)
 // https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html#ibus-lookup-table-set-round
 napi_value LookupTableSetRound(napi_env env, napi_callback_info info)
 {
-    /* @TODO */
-    ibus_lookup_table_set_round(custom_ime_lookup_table, TRUE);
+    size_t argc = 1;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    bool is_round;
+    napi_get_value_bool(env, args[0], &is_round);
+
+    ibus_lookup_table_set_round(custom_ime_lookup_table, is_round);
 
     RETURN_UNDEFINED;
 }
@@ -406,8 +434,10 @@ napi_value MainModule(napi_env env, napi_value exports)
 
     NODE_EXPOSE_FN(EngineCommitText, "engineCommitText");
     NODE_EXPOSE_FN(EngineHideLookupTable, "engineHideLookupTable");
+    NODE_EXPOSE_FN(EngineHidePreeditText, "engineHidePreeditText");
     NODE_EXPOSE_FN(EngineShowAuxiliaryText, "engineShowAuxiliaryText");
     NODE_EXPOSE_FN(EngineShowLookupTable, "engineShowLookupTable");
+    NODE_EXPOSE_FN(EngineShowPreeditText, "engineShowPreeditText");
     NODE_EXPOSE_FN(EngineUpdateAuxiliaryText, "engineUpdateAuxiliaryText");
     NODE_EXPOSE_FN(EngineUpdateLookupTable, "engineUpdateLookupTable");
     NODE_EXPOSE_FN(EngineUpdatePreeditText, "engineUpdatePreeditText");

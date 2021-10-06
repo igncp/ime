@@ -1,39 +1,16 @@
-- [x] Be able to listen to key events via ibus
-    - Learn well the napi usage
-- [x] Expose important engine methods: https://ibus.github.io/docs/ibus-1.5/IBusEngine.html
-    - Also start with the lookup table: https://ibus.github.io/docs/ibus-1.5/IBusLookupTable.html
-    - Create practical tests to learn the usage
-- [ ] Port remaining methods:
-    - The ibus functions used by rime that not ported yet are (except sime hide methods):
-        - ibus_attr_background_new
-        - ibus_attr_foreground_new
-        - ibus_attr_list_append
-        - ibus_attr_list_new
-        - ibus_attr_underline_new
-        - ibus_bus_get_connection
-        - ibus_bus_is_connected
-        - ibus_engine_register_properties
-        - ibus_engine_set_cursor_location
-        - ibus_engine_update_property
-        - ibus_factory_add_engine
-        - ibus_factory_new
-        - ibus_object_class
-        - ibus_property_new
-        - ibus_property_set_icon
-        - ibus_property_set_label
-        - ibus_property_set_symbol
-        - ibus_prop_list_append
-        - ibus_prop_list_get
-        - ibus_prop_list_new
-        - ibus_quit
-        - ibus_text_append_attribute
-        - ibus_text_get_length
-        - ibus_text_get_text
-        - ibus_text_new_from_printf
-        - ibus_text_new_from_static_string
-        - ibus_text_new_from_string
-        - ibus_text_new_from_unichar
-- [ ] Improve key detection
-- [ ] Resolve TODOs in module
-- [ ] Far down the line: use `status` in C methods to check for errors
-- [ ] Continue drafting the flow and separating concerns
+- [ ] Create test files under ibus package for several usage flows to improve API
+    - [x] Preedit text
+    - [ ] Lookup table with transitions
+
+## General Improvements
+
+- Support more IBus methods
+- Far down the line: use `status` in C methods to check for errors
+- Improve key detection, consider adding a dependency
+- Support using TS in some files
+
+## Challenges
+
+- Different keyboard layouts
+- Unicode
+- Shortcuts

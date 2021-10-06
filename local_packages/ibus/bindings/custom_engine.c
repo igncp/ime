@@ -54,7 +54,6 @@ static gboolean ibus_custom_ime_engine_process_key_event (
     guint       modifiers
 )
 {
-    gboolean result = TRUE;
     napi_status status;
 
     napi_value keyval_return, keycode_return, modifiers_return;
@@ -78,10 +77,14 @@ static gboolean ibus_custom_ime_engine_process_key_event (
     }
 
     napi_value global;
+    napi_value result_value;
     napi_get_global(ime_handlers.env, &global);
-    napi_call_function(ime_handlers.env, global, cb, 1, &obj, NULL);
+    napi_call_function(ime_handlers.env, global, cb, 1, &obj, &result_value);
 
-    return result;
+    bool fn_result;
+    napi_get_value_bool(ime_handlers.env, result_value, &fn_result);
+
+    return fn_result;
 }
 
 static void ibus_custom_ime_engine_class_init (IBusCustomImeEngineClass *klass)
