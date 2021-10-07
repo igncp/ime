@@ -1,5 +1,6 @@
 - [ ] Create test files under ibus package for several usage flows to improve API
     - [x] Preedit text
+    - [x] Auxiliary text
     - [ ] Lookup table with transitions
 
 ## General Improvements

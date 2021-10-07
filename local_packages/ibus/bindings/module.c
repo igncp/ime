@@ -37,6 +37,25 @@ napi_value EngineCommitText(napi_env env, napi_callback_info info)
     RETURN_UNDEFINED;
 }
 
+// https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-get-name
+napi_value EngineGetName(napi_env env, napi_callback_info info)
+{
+    const gchar * engine_name = ibus_engine_get_name((IBusEngine *) &custom_ime_engine);
+
+    napi_value engine_name_value;
+    napi_create_string_utf8(env, engine_name, NAPI_AUTO_LENGTH, &engine_name_value);
+
+    return engine_name_value;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-hide-auxiliary-text
+napi_value EngineHideAuxiliaryText(napi_env env, napi_callback_info info)
+{
+    ibus_engine_hide_auxiliary_text((IBusEngine *) &custom_ime_engine);
+
+    RETURN_UNDEFINED;
+}
+
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-hide-lookup-table
 napi_value EngineHideLookupTable(napi_env env, napi_callback_info info)
 {
@@ -80,7 +99,7 @@ napi_value EngineShowPreeditText(napi_env env, napi_callback_info info)
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-update-auxiliary-text
 napi_value EngineUpdateAuxiliaryText(napi_env env, napi_callback_info info)
 {
-    size_t argc = 1;
+    size_t argc = 2;
     napi_value args[argc];
     napi_get_cb_info(env, info, &argc, args, NULL, NULL);
 
@@ -94,10 +113,13 @@ napi_value EngineUpdateAuxiliaryText(napi_env env, napi_callback_info info)
 
     IBusText *text = ibus_text_new_from_string(text_opt);
 
+    bool is_visible;
+    napi_get_value_bool(env, args[1], &is_visible);
+
     ibus_engine_update_auxiliary_text (
         (IBusEngine *) &custom_ime_engine,
         text,
-        TRUE /* @TODO */
+        is_visible
     );
 
     free(text_opt);
@@ -433,6 +455,8 @@ napi_value MainModule(napi_env env, napi_value exports)
     napi_set_named_property(env, exports, keyName, fn);
 
     NODE_EXPOSE_FN(EngineCommitText, "engineCommitText");
+    NODE_EXPOSE_FN(EngineGetName, "engineGetName");
+    NODE_EXPOSE_FN(EngineHideAuxiliaryText, "engineHideAuxiliaryText");
     NODE_EXPOSE_FN(EngineHideLookupTable, "engineHideLookupTable");
     NODE_EXPOSE_FN(EngineHidePreeditText, "engineHidePreeditText");
     NODE_EXPOSE_FN(EngineShowAuxiliaryText, "engineShowAuxiliaryText");

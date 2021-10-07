@@ -35,6 +35,10 @@
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
       'cflags!': [ '-fno-exceptions' ],
       'cflags_cc!': [ '-fno-exceptions' ],
+    },
+    {
+      "sources": ["./bindings/module_07.c"],
+      "target_name": "module_07"
     }
   ]
 }

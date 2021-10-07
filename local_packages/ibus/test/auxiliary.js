@@ -3,6 +3,7 @@ const ibus = require("../src");
 const { KeyCodes, KeyEventReturn } = ibus.helpers;
 
 const keysToSkip = [
+  KeyCodes.ALT_TAB,
   KeyCodes.ARROW_LEFT,
   KeyCodes.ARROW_RIGHT,
   KeyCodes.ARROW_UP,
@@ -10,10 +11,11 @@ const keysToSkip = [
   KeyCodes.DEL,
   KeyCodes.LOCK_NUM,
   KeyCodes.PAGE_DOWN,
+  KeyCodes.SHIFT_RIGHT,
   KeyCodes.TAB,
 ];
 
-class PreeditTest {
+class AuxiliaryTest {
   constructor() {
     ibus.registerHandlers({
       disable: this._disable.bind(this),
@@ -21,7 +23,7 @@ class PreeditTest {
       keyEvent: this._keyEvent.bind(this),
     });
 
-    this.preeditText = "";
+    this.auxiliaryText = "";
   }
 
   async init() {
@@ -37,19 +39,15 @@ class PreeditTest {
 
   _enable() {
     const engineName = ibus.engineGetName();
-    console.log("enable called from JS", engineName);
+    console.log("enable called from JS: ", engineName);
   }
 
   _disable() {
     console.log("disable called from JS");
   }
 
-  _engineUpdatePreeditText() {
-    ibus.engineUpdatePreeditText(
-      this.preeditText,
-      this.preeditText.length,
-      true
-    );
+  _engineUpdateAuxiliaryText(isVisible) {
+    ibus.engineUpdateAuxiliaryText(this.auxiliaryText, isVisible);
   }
 
   _keyEvent(keyInfo) {
@@ -59,26 +57,26 @@ class PreeditTest {
 
     const { keycode } = keyInfo;
     const key = String.fromCharCode(keyInfo.keyval) || "";
-    console.log("preedit.js: keycode", keycode, key, keyInfo.modifiers);
 
     if (ibus.helpers.isKeyWithCtrl(keyInfo) || keycode === KeyCodes.SHIFT) {
       return KeyEventReturn.NativeHandling;
     }
 
     if (keycode === KeyCodes.ESC) {
-      this.preeditText = "";
-      this._engineUpdatePreeditText();
+      this.auxiliaryText = "";
+      this._engineUpdateAuxiliaryText(false);
 
       return KeyEventReturn.CustomHandling;
     }
 
     if (keycode === KeyCodes.ENTER) {
-      if (!this.preeditText) {
+      if (!this.auxiliaryText) {
         return KeyEventReturn.NativeHandling;
       }
 
-      ibus.engineCommitText(this.preeditText);
-      this.preeditText = "";
+      ibus.engineCommitText(this.auxiliaryText);
+      this.auxiliaryText = "";
+      this._engineUpdateAuxiliaryText(false);
 
       return KeyEventReturn.CustomHandling;
     }
@@ -86,29 +84,32 @@ class PreeditTest {
     const shouldSkipKey = keysToSkip.includes(keycode);
 
     if (shouldSkipKey) {
-      this.preeditText = "";
-      this._engineUpdatePreeditText();
+      this.auxiliaryText = "";
+      this._engineUpdateAuxiliaryText(false);
       return KeyEventReturn.NativeHandling;
     }
 
     if (keycode === KeyCodes.BACKSPACE) {
-      if (!this.preeditText) {
+      if (!this.auxiliaryText) {
         return KeyEventReturn.NativeHandling;
       }
 
-      this.preeditText = this.preeditText.slice(0, this.preeditText.length - 1);
+      this.auxiliaryText = this.auxiliaryText.slice(
+        0,
+        this.auxiliaryText.length - 1
+      );
     } else {
-      this.preeditText += key;
+      this.auxiliaryText += key;
     }
 
-    this._engineUpdatePreeditText();
+    this._engineUpdateAuxiliaryText(true);
 
     return KeyEventReturn.CustomHandling;
   }
 }
 
 const main = async () => {
-  const test = new PreeditTest();
+  const test = new AuxiliaryTest();
 
   await test.init();
 };

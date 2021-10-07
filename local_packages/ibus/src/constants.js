@@ -25,6 +25,7 @@ const IBusModifierType = {
 IBusModifierType.IBUS_IGNORED_MASK = IBusModifierType.IBUS_FORWARD_MASK;
 
 const KeyCodes = {
+  ALT_TAB: 56,
   ARROW_DOWN: 108,
   ARROW_LEFT: 105,
   ARROW_RIGHT: 106,
@@ -39,6 +40,8 @@ const KeyCodes = {
   PAGE_DOWN: 109,
   PAGE_UP: 104,
   SHIFT: 42,
+  SHIFT_RIGHT: 54,
+  TAB: 15,
   UP: 103,
 };
 

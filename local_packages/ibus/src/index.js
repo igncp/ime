@@ -17,6 +17,18 @@ const engineCommitText = (text) => {
   });
 };
 
+const engineGetName = () => {
+  return runWithCatch(() => {
+    return addon.engineGetName();
+  });
+};
+
+const engineHideAuxiliaryText = () => {
+  runWithCatch(() => {
+    addon.engineHideAuxiliaryText();
+  });
+};
+
 const engineHideLookupTable = () => {
   runWithCatch(() => {
     addon.engineHideLookupTable();
@@ -47,9 +59,9 @@ const engineShowPreeditText = () => {
   });
 };
 
-const engineUpdateAuxiliaryText = (text) => {
+const engineUpdateAuxiliaryText = (text, isVisible) => {
   runWithCatch(() => {
-    addon.engineUpdateAuxiliaryText(text);
+    addon.engineUpdateAuxiliaryText(text, isVisible);
   });
 };
 
@@ -216,6 +228,8 @@ const lookupTableSetRound = () => {
 
 module.exports = {
   engineCommitText,
+  engineGetName,
+  engineHideAuxiliaryText,
   engineHideLookupTable,
   engineHidePreeditText,
   engineShowAuxiliaryText,
