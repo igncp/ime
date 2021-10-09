@@ -39,6 +39,10 @@
     {
       "sources": ["./bindings/module_07.c"],
       "target_name": "module_07"
+    },
+    {
+      "sources": ["./bindings/module_08.c"],
+      "target_name": "module_08"
     }
   ]
 }
