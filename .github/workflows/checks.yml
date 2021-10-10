@@ -16,11 +16,11 @@ jobs:
           sudo apt-get install -y libnotify-dev libibus-1.0-dev
           npm install
 
+      - name: Build 🔧
+        run: |
+          npm run build
+
       - name: Lint 🔎
         run: |
           npm run lint
           npm run check:ts
-
-      - name: Build 🔧
-        run: |
-          npm run build
