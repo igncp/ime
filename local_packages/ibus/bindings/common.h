@@ -8,15 +8,21 @@
     napi_get_undefined(env, &function_result); \
     return function_result
 
-#define RETURN_OBJ_WRAP(propertyValue, wrappedStruct) \
+#define OBJ_WRAP(propertyValue, wrappedStruct) \
     napi_value js_object; \
     napi_create_object(env, &js_object); \
+ \
     napi_value property_key_name; \
     napi_create_string_utf8(env, "_ibusObjType", NAPI_AUTO_LENGTH, &property_key_name); \
+ \
     napi_value property_value; \
     napi_create_string_utf8(env, propertyValue, NAPI_AUTO_LENGTH, &property_value); \
     napi_set_property(env, js_object, property_key_name, property_value); \
-    napi_wrap(env, js_object, (void *) wrappedStruct, NULL, NULL, NULL); \
+ \
+    napi_wrap(env, js_object, (void *) wrappedStruct, NULL, NULL, NULL)
+
+#define RETURN_OBJ_WRAP(propertyValue, wrappedStruct) \
+    OBJ_WRAP(propertyValue, wrappedStruct); \
     return js_object
 
 #define EXTRACT_KEY_INIT \
@@ -26,12 +32,14 @@
 #define EXTRACT_KEY_PROPERTY(suffix, keyName) \
     napi_value CONCAT(property_, suffix); \
     napi_create_string_utf8(env, keyName, NAPI_AUTO_LENGTH, &CONCAT(property_, suffix)); \
+ \
     napi_value CONCAT(value_, suffix); \
     napi_get_property(env, opts_obj, CONCAT(property_, suffix), &CONCAT(value_, suffix))
 
 #define EXTRACT_KEY_STR(suffix, keyName, resultName) \
     EXTRACT_KEY_PROPERTY(suffix, keyName); \
     napi_get_value_string_utf8(env, CONCAT(value_, suffix), NULL, 0, &str_size); \
+ \
     str_size += 1; \
     char * resultName = (char*)calloc(str_size + 1, sizeof(char)); \
     napi_get_value_string_utf8(env, CONCAT(value_, suffix), resultName, str_size, &str_size_read)

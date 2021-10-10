@@ -1,81 +1,16 @@
 #include <node_api.h>
 
-#include "custom_engine.h"
+#include "custom_ime.h"
 #include "lookup_table.h"
 #include "engine.h"
 #include "property.h"
 #include "text.h"
+#include "share.h"
+#include "bus.h"
 
 extern ImeHandlers ime_handlers;
 extern IBusCustomImeEngine custom_ime_engine;
 extern IBusLookupTable * custom_ime_lookup_table;
-
-napi_value Init(napi_env env, napi_callback_info info)
-{
-    ibus_init();
-    IBusBus *bus = ibus_bus_new();
-    g_object_ref_sink(bus);
-
-    if (!ibus_bus_is_connected(bus))
-    {
-        g_warning("not connected to ibus");
-        exit(1);
-    }
-
-    g_signal_connect(bus, "disconnected", G_CALLBACK(ibus_disconnect_cb), NULL);
-
-    IBusFactory *factory = ibus_factory_new(ibus_bus_get_connection(bus));
-    g_object_ref_sink(factory);
-
-    size_t argc = 3;
-    napi_value args[argc];
-    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
-
-    size_t str_size_ime, str_size_bus;
-    napi_get_value_string_utf8(env, args[0], NULL, 0, &str_size_ime);
-    str_size_ime += 1;
-    napi_get_value_string_utf8(env, args[1], NULL, 0, &str_size_bus);
-    str_size_bus += 1;
-
-    size_t str_size_read_ime, str_size_read_bus;
-    char *ime_name  = (char*)calloc(str_size_ime + 1, sizeof(char));
-    napi_get_value_string_utf8(env, args[0], ime_name, str_size_ime, &str_size_read_ime);
-    char *bus_name  = (char*)calloc(str_size_bus + 1, sizeof(char));
-    napi_get_value_string_utf8(env, args[1], bus_name, str_size_bus, &str_size_read_bus);
-
-    napi_value cb = args[2];
-
-    printf("IME name: %.*s\n", (int) str_size_read_ime, ime_name);
-    printf("Bus name: %.*s\n", (int) str_size_read_bus, bus_name);
-
-    ibus_factory_add_engine(factory, ime_name, (ibus_custom_ime_engine_get_type()));
-
-    if (!ibus_bus_request_name(bus, bus_name, 0))
-    {
-        printf("error requesting bus name\n");
-        exit(1);
-    }
-
-    napi_value global;
-    napi_get_global(env, &global);
-    napi_value result;
-    napi_call_function(env, global, cb, 0, NULL, &result);
-
-    free(ime_name);
-    free(bus_name);
-
-    g_object_unref(factory);
-    g_object_unref(bus);
-
-    RETURN_UNDEFINED;
-}
-
-napi_value Main(napi_env env, napi_callback_info info)
-{
-    ibus_main();
-
-    RETURN_UNDEFINED;
-}
 
 napi_value RegisterHandlers(napi_env env, napi_callback_info info)
 {
@@ -114,7 +49,26 @@ napi_value MainModule(napi_env env, napi_value exports)
     NODE_EXPOSE_FN(AttrListAppend, "attrListAppend");
     NODE_EXPOSE_FN(AttrListNew, "attrListNew");
     NODE_EXPOSE_FN(AttributeNew, "attributeNew");
+    NODE_EXPOSE_FN(BusCurrentInputContext, "busCurrentInputContext");
+    NODE_EXPOSE_FN(BusGetConnection, "busGetConnection");
+    NODE_EXPOSE_FN(BusIsConnected, "busIsConnected");
+    NODE_EXPOSE_FN(BusListEngines, "busListEngines");
+    NODE_EXPOSE_FN(BusNew, "busNew");
+    NODE_EXPOSE_FN(BusRequestName, "busRequestName");
     NODE_EXPOSE_FN(EngineCommitText, "engineCommitText");
+    NODE_EXPOSE_FN(EngineDescGetAuthor, "engineDescGetAuthor");
+    NODE_EXPOSE_FN(EngineDescGetDescription, "engineDescGetDescription");
+    NODE_EXPOSE_FN(EngineDescGetHotkeys, "engineDescGetHotkeys");
+    NODE_EXPOSE_FN(EngineDescGetLanguage, "engineDescGetLanguage");
+    NODE_EXPOSE_FN(EngineDescGetLayout, "engineDescGetLayout");
+    NODE_EXPOSE_FN(EngineDescGetLicense, "engineDescGetLicense");
+    NODE_EXPOSE_FN(EngineDescGetLongname, "engineDescGetLongname");
+    NODE_EXPOSE_FN(EngineDescGetName, "engineDescGetName");
+    NODE_EXPOSE_FN(EngineDescGetRank, "engineDescGetRank");
+    NODE_EXPOSE_FN(EngineDescGetSetup, "engineDescGetSetup");
+    NODE_EXPOSE_FN(EngineDescGetSymbol, "engineDescGetSymbol");
+    NODE_EXPOSE_FN(EngineDescGetTextdomain, "engineDescGetTextdomain");
+    NODE_EXPOSE_FN(EngineDescGetVersion, "engineDescGetVersion");
     NODE_EXPOSE_FN(EngineGetName, "engineGetName");
     NODE_EXPOSE_FN(EngineHideAuxiliaryText, "engineHideAuxiliaryText");
     NODE_EXPOSE_FN(EngineHideLookupTable, "engineHideLookupTable");
@@ -126,6 +80,8 @@ napi_value MainModule(napi_env env, napi_value exports)
     NODE_EXPOSE_FN(EngineUpdateAuxiliaryText, "engineUpdateAuxiliaryText");
     NODE_EXPOSE_FN(EngineUpdateLookupTable, "engineUpdateLookupTable");
     NODE_EXPOSE_FN(EngineUpdatePreeditText, "engineUpdatePreeditText");
+    NODE_EXPOSE_FN(FactoryAddEngine, "factoryAddEngine");
+    NODE_EXPOSE_FN(FactoryNew, "factoryNew");
     NODE_EXPOSE_FN(Init, "init");
     NODE_EXPOSE_FN(LookupTableAppendCandidate, "lookupTableAppendCandidate");
     NODE_EXPOSE_FN(LookupTableClear, "lookupTableClear");
@@ -145,6 +101,7 @@ napi_value MainModule(napi_env env, napi_value exports)
     NODE_EXPOSE_FN(LookupTableSetRound, "lookupTableSetRound");
     NODE_EXPOSE_FN(Main, "main");
     NODE_EXPOSE_FN(PropListAppend, "propListAppend");
+    NODE_EXPOSE_FN(PropListNew, "propListNew");
     NODE_EXPOSE_FN(PropertyGetState, "propertyGetState");
     NODE_EXPOSE_FN(PropertyNew, "propertyNew");
     NODE_EXPOSE_FN(PropertySetState, "propertySetState");

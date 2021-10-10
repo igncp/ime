@@ -1,11 +1,9 @@
-#ifndef IBUS_IME_CUSTOM_ENGINE_H
-#define IBUS_IME_CUSTOM_ENGINE_H
+#ifndef IBUS_IME_CUSTOM_IME_H
+#define IBUS_IME_CUSTOM_IME_H
 
 #include <node_api.h>
 #include <glib/gstdio.h>
 #include <ibus.h>
-
-// https://ibus.github.io/docs/ibus-1.5/index.html
 
 typedef struct ImeHandlers
 {
@@ -23,11 +21,7 @@ typedef struct _IBusCustomImeEngineClass IBusCustomImeEngineClass;
 
 extern ImeHandlers ime_handlers;
 extern IBusCustomImeEngine custom_ime_engine;
-
 extern IBusLookupTable * custom_ime_lookup_table;
-extern IBusPropList * custom_ime_prop_list;
-
-void ibus_disconnect_cb(IBusBus *bus, gpointer user_data);
 
 GType ibus_custom_ime_engine_get_type();
 

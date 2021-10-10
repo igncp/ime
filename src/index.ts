@@ -1,4 +1,5 @@
 import * as ibus from "ibus"
+import { initFull } from "ibus/dist/helpers"
 import * as libnotify from "libnotify"
 
 const keyEventHandler = (keyInfo: ibus.KeyInfo) => {
@@ -31,13 +32,12 @@ const main = () => {
     propertyActivate: () => {},
   })
 
-  ibus.init({
+  initFull({
     busName: config.busName,
-    cb: () => {
-      ibus.main()
-    },
     imeName: config.imeName,
   })
+
+  ibus.main()
 }
 
 main()

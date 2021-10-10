@@ -18,6 +18,7 @@ jobs:
 
       - name: Build 🔧
         run: |
+          npm run clean
           npm run build
 
       - name: Lint 🔎

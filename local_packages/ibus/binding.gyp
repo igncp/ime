@@ -2,11 +2,13 @@
   "targets": [
     {
       "sources": [
-        "./bindings/custom_engine.c",
+        "./bindings/bus.c",
+        "./bindings/custom_ime.c",
         "./bindings/engine.c",
         "./bindings/lookup_table.c",
         "./bindings/module.c",
         "./bindings/property.c",
+        "./bindings/share.c",
         "./bindings/text.c",
       ],
       "target_name": "module",

@@ -80,6 +80,13 @@ enum IBusOrientation {
   IBUS_ORIENTATION_SYSTEM = 2,
 }
 
+enum IBusBusRequestNameReply {
+  IBUS_BUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 1,
+  IBUS_BUS_REQUEST_NAME_REPLY_IN_QUEUE = 2,
+  IBUS_BUS_REQUEST_NAME_REPLY_EXISTS = 3,
+  IBUS_BUS_REQUEST_NAME_REPLY_ALREADY_OWNER = 4,
+}
+
 const KeyEventReturn = {
   CustomHandling: true,
   NativeHandling: false,
@@ -88,6 +95,7 @@ const KeyEventReturn = {
 export {
   IBusAttrType,
   IBusAttrUnderline,
+  IBusBusRequestNameReply,
   IBusModifierType,
   IBusOrientation,
   IBusPropState,

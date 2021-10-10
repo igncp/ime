@@ -1,4 +1,5 @@
 import * as ibus from "../src"
+import * as ibusHelpers from "../src/helpers"
 
 const { KeyCodes, KeyEventReturn } = ibus
 
@@ -135,13 +136,12 @@ const main = () => {
     propertyActivate: () => {},
   })
 
-  ibus.init({
+  ibusHelpers.initFull({
     busName: config.busName,
-    cb: () => {
-      ibus.main()
-    },
     imeName: config.imeName,
   })
+
+  ibus.main()
 
   return Promise.resolve()
 }

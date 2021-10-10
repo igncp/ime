@@ -9,8 +9,9 @@
   "license": "ISC",
   "scripts": {
     "build": "sh ./scripts/build.sh",
-    "check:ci": "npm run lint && npm run check:ts",
+    "check:ci": "sh ./scripts/check_ci.sh",
     "check:ts": "sh ./scripts/check_ts.sh",
+    "clean": "sh ./scripts/clean.sh",
     "lint": "sh ./scripts/lint.sh"
   },
   "dependencies": {

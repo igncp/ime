@@ -1,9 +1,11 @@
 import * as ibus from "../src"
+import * as ibusHelpers from "../src/helpers"
 
 const { KeyEventReturn } = ibus
 
 class PropertiesTest {
   private firstProperty: ibus.IBusProperty | null = null
+  private propList: ibus.IBusPropList | null = null
 
   public constructor() {
     ibus.registerHandlers({
@@ -22,13 +24,12 @@ class PropertiesTest {
       imeName: "custom-ime",
     }
 
-    ibus.init({
+    ibusHelpers.initFull({
       busName: config.busName,
-      cb: () => {
-        ibus.main()
-      },
       imeName: config.imeName,
     })
+
+    ibus.main()
   }
 
   private static enable() {
@@ -82,6 +83,10 @@ class PropertiesTest {
     console.log("focusIn JS")
 
     if (!this.firstProperty) {
+      const list = ibus.propListNew()
+
+      this.propList = list
+
       const label = ibus.textNewFromString("Sample Label")
 
       const property = ibus.propertyNew({
@@ -93,13 +98,16 @@ class PropertiesTest {
         type: ibus.IBusPropType.PROP_TYPE_TOGGLE,
       })
 
-      ibus.propListAppend(property)
+      ibus.propListAppend({ list, prop: property })
 
-      console.log("properties.ts: text", label)
       this.firstProperty = property
     }
 
-    ibus.engineRegisterProperties()
+    if (!this.propList) {
+      return
+    }
+
+    ibus.engineRegisterProperties(this.propList)
   }
 }
 

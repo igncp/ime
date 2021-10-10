@@ -1,4 +1,4 @@
-#include "custom_engine.h"
+#include "custom_ime.h"
 
 struct _IBusCustomImeEngineClass
 {
@@ -16,15 +16,8 @@ static void ibus_custom_ime_engine_init (IBusCustomImeEngine *custom_ime_engine)
 ImeHandlers ime_handlers = {};
 IBusCustomImeEngine custom_ime_engine;
 IBusLookupTable * custom_ime_lookup_table;
-IBusPropList * custom_ime_prop_list;
 
 G_DEFINE_TYPE (IBusCustomImeEngine, ibus_custom_ime_engine, IBUS_TYPE_ENGINE)
-
-void ibus_disconnect_cb(IBusBus *bus, gpointer user_data)
-{
-    g_debug("bus disconnected");
-    ibus_quit();
-}
 
 static void ibus_custom_ime_engine_disable (IBusEngine *engine)
 {
@@ -146,8 +139,6 @@ static void ibus_custom_ime_engine_init (IBusCustomImeEngine * _custom_ime_engin
     custom_ime_engine = *_custom_ime_engine;
 
     custom_ime_lookup_table = ibus_lookup_table_new(9, 0, TRUE, FALSE);
-    custom_ime_prop_list = ibus_prop_list_new();
 
     g_object_ref_sink(custom_ime_lookup_table);
-    g_object_ref_sink(custom_ime_prop_list);
 }

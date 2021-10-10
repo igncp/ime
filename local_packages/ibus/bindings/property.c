@@ -3,17 +3,29 @@
 // https://ibus.github.io/docs/ibus-1.5/IBusPropList.html#ibus-prop-list-append
 napi_value PropListAppend(napi_env env, napi_callback_info info)
 {
-    size_t argc = 1;
+    size_t argc = 2;
     napi_value args[argc];
     napi_get_cb_info(env, info, &argc, args, NULL, NULL);
 
+    IBusPropList * list =  NULL;
+    napi_unwrap(env, args[0], (void **)&list);
+
     IBusProperty * prop =  NULL;
+    napi_unwrap(env, args[1], (void **)&prop);
 
-    napi_unwrap(env, args[0], (void **)&prop);
-
-    ibus_prop_list_append(custom_ime_prop_list, prop);
+    ibus_prop_list_append(list, prop);
 
     RETURN_UNDEFINED;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusPropList.html#ibus-prop-list-new
+napi_value PropListNew(napi_env env, napi_callback_info info)
+{
+    IBusPropList * prop_list = ibus_prop_list_new();
+
+    g_object_ref_sink(prop_list);
+
+    RETURN_OBJ_WRAP("IBusPropList", prop_list);
 }
 
 // https://ibus.github.io/docs/ibus-1.5/IBusProperty.html#ibus-property-get-state
@@ -80,7 +92,6 @@ napi_value PropertySetState(napi_env env, napi_callback_info info)
     napi_get_cb_info(env, info, &argc, args, NULL, NULL);
 
     IBusProperty * prop =  NULL;
-
     napi_unwrap(env, args[0], (void **)&prop);
 
     guint32 new_state;

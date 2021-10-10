@@ -2,7 +2,7 @@
 #include <node_api.h>
 
 #include "common.h"
-#include "custom_engine.h"
+#include "custom_ime.h"
 
 napi_value LookupTableAppendCandidate(napi_env env, napi_callback_info info);
 napi_value LookupTableClear(napi_env env, napi_callback_info info);

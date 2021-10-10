@@ -1,4 +1,5 @@
 import * as ibus from "../src"
+import * as ibusHelpers from "../src/helpers"
 
 const { KeyCodes, KeyEventReturn } = ibus
 
@@ -37,13 +38,12 @@ class AuxiliaryTest {
       imeName: "custom-ime",
     }
 
-    ibus.init({
+    ibusHelpers.initFull({
       busName: config.busName,
-      cb: () => {
-        ibus.main()
-      },
       imeName: config.imeName,
     })
+
+    ibus.main()
   }
 
   private static enable() {

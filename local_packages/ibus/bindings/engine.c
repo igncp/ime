@@ -25,6 +25,78 @@ napi_value EngineCommitText(napi_env env, napi_callback_info info)
     RETURN_UNDEFINED;
 }
 
+#define ENGINE_DESC_GET_FN(fnName, ibus_fn) \
+napi_value fnName(napi_env env, napi_callback_info info) \
+{ \
+    size_t argc = 1; \
+    napi_value args[argc]; \
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL); \
+    IBusEngineDesc * engineDesc =  NULL; \
+\
+    napi_unwrap(env, args[0], (void **)&engineDesc); \
+\
+    const gchar * engine_prop = ibus_fn(engineDesc); \
+\
+    napi_value engine_prop_value; \
+    napi_create_string_utf8(env, engine_prop, NAPI_AUTO_LENGTH, &engine_prop_value); \
+\
+    return engine_prop_value; \
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-author
+ENGINE_DESC_GET_FN(EngineDescGetAuthor, ibus_engine_desc_get_author)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-description
+ENGINE_DESC_GET_FN(EngineDescGetDescription, ibus_engine_desc_get_description)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-hotkeys
+ENGINE_DESC_GET_FN(EngineDescGetHotkeys, ibus_engine_desc_get_hotkeys)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-language
+ENGINE_DESC_GET_FN(EngineDescGetLanguage, ibus_engine_desc_get_language)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-layout
+ENGINE_DESC_GET_FN(EngineDescGetLayout, ibus_engine_desc_get_layout)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-license
+ENGINE_DESC_GET_FN(EngineDescGetLicense, ibus_engine_desc_get_license)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-longname
+ENGINE_DESC_GET_FN(EngineDescGetLongname, ibus_engine_desc_get_longname)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-name
+ENGINE_DESC_GET_FN(EngineDescGetName, ibus_engine_desc_get_name)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-rank
+napi_value EngineDescGetRank(napi_env env, napi_callback_info info)
+{
+    size_t argc = 1;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+    IBusEngineDesc * engineDesc =  NULL;
+
+    napi_unwrap(env, args[0], (void **)&engineDesc);
+
+    guint engine_rank = ibus_engine_desc_get_rank(engineDesc);
+
+    napi_value engine_rank_value;
+    napi_create_uint32(env, engine_rank, &engine_rank_value);
+
+    return engine_rank_value;
+}
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-setup
+ENGINE_DESC_GET_FN(EngineDescGetSetup, ibus_engine_desc_get_setup)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-symbol
+ENGINE_DESC_GET_FN(EngineDescGetSymbol, ibus_engine_desc_get_symbol)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-textdomain
+ENGINE_DESC_GET_FN(EngineDescGetTextdomain, ibus_engine_desc_get_textdomain)
+
+// https://ibus.github.io/docs/ibus-1.5/IBusEngineDesc.html#ibus-engine-desc-get-version
+ENGINE_DESC_GET_FN(EngineDescGetVersion, ibus_engine_desc_get_version)
+
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-get-name
 napi_value EngineGetName(napi_env env, napi_callback_info info)
 {
@@ -63,7 +135,14 @@ napi_value EngineHidePreeditText(napi_env env, napi_callback_info info)
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-register-properties
 napi_value EngineRegisterProperties(napi_env env, napi_callback_info info)
 {
-    ibus_engine_register_properties((IBusEngine *) &custom_ime_engine, custom_ime_prop_list);
+    size_t argc = 1;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    IBusPropList * list =  NULL;
+    napi_unwrap(env, args[0], (void **)&list);
+
+    ibus_engine_register_properties((IBusEngine *) &custom_ime_engine, list);
 
     RETURN_UNDEFINED;
 }

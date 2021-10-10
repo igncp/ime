@@ -51,9 +51,12 @@ napi_value UnwrapObj(napi_env env, napi_callback_info info)
     // This will set as NULL the pointer after the first time, even if it is not freed
     napi_remove_wrap(env, args[0], (void **)&foo);
 
-    if (foo == NULL) {
+    if (foo == NULL)
+    {
         printf("The JS object doesn't wrap a native object\n");
-    } else {
+    }
+    else
+    {
         print_foo(foo);
         free(foo);
     }

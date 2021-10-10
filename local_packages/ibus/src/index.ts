@@ -1,8 +1,13 @@
 import addon, {
   AttributeNewOpts,
+  GDBusConnection,
   Handlers,
   IBusAttrList,
   IBusAttribute,
+  IBusBus,
+  IBusEngineDesc,
+  IBusFactory,
+  IBusPropList,
   IBusProperty,
   IBusText,
   KeyInfo,
@@ -32,12 +37,6 @@ const runWithCatch = <FnResult>(fn: () => FnResult): FnResult => {
   }
 }
 
-const engineCommitText = (text: string) => {
-  runWithCatch(() => {
-    addon.engineCommitText(text)
-  })
-}
-
 const attrForegroundNew = ({
   color,
   endIndex,
@@ -65,6 +64,68 @@ const attrListNew = () => runWithCatch(() => addon.attrListNew())
 const attributeNew = (opts: AttributeNewOpts) =>
   runWithCatch(() => addon.attributeNew(opts))
 
+const busCurrentInputContext = (bus: IBusBus) =>
+  runWithCatch(() => addon.busCurrentInputContext(bus))
+
+const busGetConnection = (bus: IBusBus) =>
+  runWithCatch(() => addon.busGetConnection(bus))
+
+const busIsConnected = (bus: IBusBus) =>
+  runWithCatch(() => addon.busIsConnected(bus))
+
+const busListEngines = (bus: IBusBus) =>
+  runWithCatch(() => addon.busListEngines(bus))
+
+const busNew = () => runWithCatch(() => addon.busNew())
+
+const busRequestName = ({ bus, busName }: { bus: IBusBus; busName: string }) =>
+  runWithCatch(() => addon.busRequestName(bus, busName))
+
+const engineCommitText = (text: string) => {
+  runWithCatch(() => {
+    addon.engineCommitText(text)
+  })
+}
+
+const engineDescGetAuthor = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetAuthor(engineDesc))
+
+const engineDescGetDescription = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetDescription(engineDesc))
+
+const engineDescGetHotkeys = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetHotkeys(engineDesc))
+
+const engineDescGetLanguage = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetLanguage(engineDesc))
+
+const engineDescGetLayout = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetLayout(engineDesc))
+
+const engineDescGetLicense = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetLicense(engineDesc))
+
+const engineDescGetLongname = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetLongname(engineDesc))
+
+const engineDescGetName = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetName(engineDesc))
+
+const engineDescGetRank = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetRank(engineDesc))
+
+const engineDescGetSetup = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetSetup(engineDesc))
+
+const engineDescGetSymbol = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetSymbol(engineDesc))
+
+const engineDescGetTextdomain = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetTextdomain(engineDesc))
+
+const engineDescGetVersion = (engineDesc: IBusEngineDesc) =>
+  runWithCatch(() => addon.engineDescGetVersion(engineDesc))
+
 const engineGetName = () => runWithCatch(() => addon.engineGetName())
 
 const engineHideAuxiliaryText = () => {
@@ -85,9 +146,9 @@ const engineHidePreeditText = () => {
   })
 }
 
-const engineRegisterProperties = () => {
+const engineRegisterProperties = (list: IBusPropList) => {
   runWithCatch(() => {
-    addon.engineRegisterProperties()
+    addon.engineRegisterProperties(list)
   })
 }
 
@@ -145,16 +206,19 @@ const engineUpdatePreeditText = ({
   })
 }
 
-const init = ({
-  busName,
-  cb,
+const factoryAddEngine = ({
+  factory,
   imeName,
 }: {
-  busName: string
-  cb: () => void
+  factory: IBusFactory
   imeName: string
-}) => {
-  addon.init(imeName, busName, cb)
+}) => runWithCatch(() => addon.factoryAddEngine(factory, imeName))
+
+const factoryNew = (connection: GDBusConnection) =>
+  runWithCatch(() => addon.factoryNew(connection))
+
+const init = () => {
+  addon.init()
 }
 
 const main = () => {
@@ -282,9 +346,17 @@ const lookupTableSetPageSize = (pageSize: number) => {
   })
 }
 
-const propListAppend = (prop: IBusProperty) => {
+const propListNew = () => runWithCatch(() => addon.propListNew())
+
+const propListAppend = ({
+  list,
+  prop,
+}: {
+  list: IBusPropList
+  prop: IBusProperty
+}) => {
   runWithCatch(() => {
-    addon.propListAppend(prop)
+    addon.propListAppend(list, prop)
   })
 }
 
@@ -334,10 +406,14 @@ const helpers = {
 }
 
 export {
+  GDBusConnection,
   IBusAttrType,
   IBusAttrUnderline,
+  IBusEngineDesc,
+  IBusFactory,
   IBusModifierType,
   IBusOrientation,
+  IBusPropList,
   IBusPropState,
   IBusPropType,
   IBusProperty,
@@ -350,7 +426,26 @@ export {
   attrListAppend,
   attrListNew,
   attributeNew,
+  busCurrentInputContext,
+  busGetConnection,
+  busIsConnected,
+  busListEngines,
+  busNew,
+  busRequestName,
   engineCommitText,
+  engineDescGetAuthor,
+  engineDescGetDescription,
+  engineDescGetHotkeys,
+  engineDescGetLanguage,
+  engineDescGetLayout,
+  engineDescGetLicense,
+  engineDescGetLongname,
+  engineDescGetName,
+  engineDescGetRank,
+  engineDescGetSetup,
+  engineDescGetSymbol,
+  engineDescGetTextdomain,
+  engineDescGetVersion,
   engineGetName,
   engineHideAuxiliaryText,
   engineHideLookupTable,
@@ -362,6 +457,8 @@ export {
   engineUpdateAuxiliaryText,
   engineUpdateLookupTable,
   engineUpdatePreeditText,
+  factoryAddEngine,
+  factoryNew,
   helpers,
   init,
   lookupTableAppendCandidate,
@@ -382,6 +479,7 @@ export {
   lookupTableSetRound,
   main,
   propListAppend,
+  propListNew,
   propertyGetState,
   propertyNew,
   propertySetState,
