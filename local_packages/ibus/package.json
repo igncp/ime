@@ -5,7 +5,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run build:ts",
+    "build": "npm run build:c && npm run build:ts",
     "build:c": "node-gyp configure build",
     "build:ts": "rm -rf ./dist && ../../node_modules/.bin/tsc --project tsconfig.build.json",
     "check:ts": "../../node_modules/.bin/tsc --project .",
