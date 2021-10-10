@@ -1,0 +1,12 @@
+{
+  "experimentalBabelParserPluginsList": ["jsx", "typescript"],
+  "importOrder": [
+    "^[^.@]",
+    "^@[^/]",
+    "^\\.\\.",
+    "^\\."
+  ],
+  "importOrderSeparation": true,
+  "quoteProps": "preserve",
+  "semi": false
+}

@@ -7,4 +7,4 @@ echo "Starting ibus test"
 # @TODO
 cd /home/igncp/development/ime/local_packages/ibus/
 
-node test/main.js
+../../node_modules/.bin/ts-node test/main.ts

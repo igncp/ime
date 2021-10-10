@@ -17,7 +17,7 @@ void print_foo(struct Foo * foo)
 
 napi_value WrapObj(napi_env env, napi_callback_info info)
 {
-    struct Foo * foo = malloc (sizeof (struct Foo));;
+    struct Foo * foo = malloc (sizeof (struct Foo));
 
     foo->bar = 1;
     foo->baz = 2;

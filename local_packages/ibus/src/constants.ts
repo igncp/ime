@@ -1,3 +1,5 @@
+const IBUS_FORWARD_MASK = 1 << 25
+
 // https://ibus.github.io/docs/ibus-1.4/ibus-ibustypes.html#IBusModifierType-enum
 const IBusModifierType = {
   IBUS_BUTTON1_MASK: 1 << 8,
@@ -6,9 +8,10 @@ const IBusModifierType = {
   IBUS_BUTTON4_MASK: 1 << 11,
   IBUS_BUTTON5_MASK: 1 << 12,
   IBUS_CONTROL_MASK: 1 << 2,
-  IBUS_FORWARD_MASK: 1 << 25,
+  IBUS_FORWARD_MASK,
   IBUS_HANDLED_MASK: 1 << 24,
   IBUS_HYPER_MASK: 1 << 27,
+  IBUS_IGNORED_MASK: IBUS_FORWARD_MASK,
   IBUS_LOCK_MASK: 1 << 1,
   IBUS_META_MASK: 1 << 28,
   IBUS_MOD1_MASK: 1 << 3,
@@ -20,9 +23,21 @@ const IBusModifierType = {
   IBUS_RELEASE_MASK: 1 << 30,
   IBUS_SHIFT_MASK: 1 << 0,
   IBUS_SUPER_MASK: 1 << 26,
-};
+}
 
-IBusModifierType.IBUS_IGNORED_MASK = IBusModifierType.IBUS_FORWARD_MASK;
+enum IBusPropType {
+  PROP_TYPE_NORMAL = 0,
+  PROP_TYPE_TOGGLE = 1,
+  PROP_TYPE_RADIO = 2,
+  PROP_TYPE_MENU = 3,
+  PROP_TYPE_SEPARATOR = 4,
+}
+
+enum IBusPropState {
+  PROP_STATE_UNCHECKED = 0,
+  PROP_STATE_CHECKED = 1,
+  PROP_STATE_INCONSISTENT = 2,
+}
 
 const KeyCodes = {
   ALT_TAB: 56,
@@ -43,15 +58,40 @@ const KeyCodes = {
   SHIFT_RIGHT: 54,
   TAB: 15,
   UP: 103,
-};
+}
+
+enum IBusAttrType {
+  IBUS_ATTR_TYPE_UNDERLINE = 1,
+  IBUS_ATTR_TYPE_FOREGROUND = 2,
+  IBUS_ATTR_TYPE_BACKGROUND = 3,
+}
+
+enum IBusAttrUnderline {
+  IBUS_ATTR_UNDERLINE_NONE = 0,
+  IBUS_ATTR_UNDERLINE_SINGLE = 1,
+  IBUS_ATTR_UNDERLINE_DOUBLE = 2,
+  IBUS_ATTR_UNDERLINE_LOW = 3,
+  IBUS_ATTR_UNDERLINE_ERROR = 4,
+}
+
+enum IBusOrientation {
+  IBUS_ORIENTATION_HORIZONTAL = 0,
+  IBUS_ORIENTATION_VERTICAL = 1,
+  IBUS_ORIENTATION_SYSTEM = 2,
+}
 
 const KeyEventReturn = {
   CustomHandling: true,
   NativeHandling: false,
-};
+}
 
-module.exports = {
+export {
+  IBusAttrType,
+  IBusAttrUnderline,
   IBusModifierType,
+  IBusOrientation,
+  IBusPropState,
+  IBusPropType,
   KeyCodes,
   KeyEventReturn,
-};
+}

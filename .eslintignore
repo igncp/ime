@@ -1,0 +1,5 @@
+public
+static
+!storybook/.storybook
+storybook-static
+coverage-ts
