@@ -7,12 +7,25 @@ const disableHandler = () => {
   console.log("disable called from JS")
 }
 
+const table = ibus.lookupTableNew({
+  cursorPos: 1,
+  isRound: false,
+  isVisible: true,
+  pageSize: 4,
+})
+
 const enableHandler = () => {
   console.log("enable called from JS")
-  ibus.lookupTableSetOrientation(ibus.IBusOrientation.IBUS_ORIENTATION_VERTICAL)
+  ibus.lookupTableSetOrientation({
+    orientation: ibus.IBusOrientation.IBUS_ORIENTATION_VERTICAL,
+    table,
+  })
   // ibus.lookupTableSetCursorVisible(false)
-  ibus.lookupTableSetPageSize(3)
-  ibus.lookupTableSetRound()
+  ibus.lookupTableSetPageSize({
+    pageSize: 5,
+    table,
+  })
+  ibus.lookupTableSetRound(table)
 }
 
 const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
@@ -27,34 +40,34 @@ const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
   const { keycode } = keyInfo
 
   if (keycode === KeyCodes.UP) {
-    ibus.lookupTableCursorUp()
-    ibus.engineUpdateLookupTable(true)
+    ibus.lookupTableCursorUp(table)
+    ibus.engineUpdateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (keycode === KeyCodes.DOWN) {
-    ibus.lookupTableCursorDown()
-    ibus.engineUpdateLookupTable(true)
+    ibus.lookupTableCursorDown(table)
+    ibus.engineUpdateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (keycode === KeyCodes.PAGE_UP) {
-    ibus.lookupTablePageUp()
-    ibus.engineUpdateLookupTable(true)
+    ibus.lookupTablePageUp(table)
+    ibus.engineUpdateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (keycode === KeyCodes.PAGE_DOWN) {
-    ibus.lookupTablePageDown()
-    ibus.engineUpdateLookupTable(true)
+    ibus.lookupTablePageDown(table)
+    ibus.engineUpdateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
-  const candidatesNum = ibus.lookupTableGetNumberOfCandidates()
+  const candidatesNum = ibus.lookupTableGetNumberOfCandidates(table)
 
   if (key === "l") {
     const textStr = `Sample ${candidatesNum + 1}`
@@ -85,14 +98,14 @@ const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
 
     ibus.textSetAttributes({ list, text })
 
-    ibus.lookupTableAppendCandidate(text)
+    ibus.lookupTableAppendCandidate({ table, text })
   } else if (key === "p") {
     ibus.engineHideLookupTable()
-    ibus.lookupTableClear()
+    ibus.lookupTableClear(table)
   } else if (key === "i" && candidatesNum > 0) {
-    const cursorPos = ibus.lookupTableGetCursorPos()
-    const pageSize = ibus.lookupTableGetPageSize()
-    const rowIndex = ibus.lookupTableGetCursorInPage()
+    const cursorPos = ibus.lookupTableGetCursorPos(table)
+    const pageSize = ibus.lookupTableGetPageSize(table)
+    const rowIndex = ibus.lookupTableGetCursorInPage(table)
 
     console.log(
       "main.js: rowIndex",
@@ -103,18 +116,18 @@ const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
       cursorPos
     )
 
-    ibus.lookupTableSetLabel({ candidateIndex: rowIndex, label: "ABC" })
-    ibus.engineUpdateLookupTable(true)
+    ibus.lookupTableSetLabel({ candidateIndex: rowIndex, label: "ABC", table })
+    ibus.engineUpdateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (key !== "p" && key !== "i") {
     if (candidatesNum > 0) {
-      ibus.lookupTableSetCursorPos(candidatesNum - 1)
+      ibus.lookupTableSetCursorPos({ cursorPos: candidatesNum - 1, table })
     }
 
-    ibus.engineUpdateLookupTable(true)
+    ibus.engineUpdateLookupTable({ isVisible: true, table })
   }
 
   return KeyEventReturn.CustomHandling

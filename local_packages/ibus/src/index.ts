@@ -7,6 +7,7 @@ import addon, {
   IBusBus,
   IBusEngineDesc,
   IBusFactory,
+  IBusLookupTable,
   IBusPropList,
   IBusProperty,
   IBusText,
@@ -146,6 +147,16 @@ const engineHidePreeditText = () => {
   })
 }
 
+const engineNew = ({
+  connection,
+  engineName,
+  objPath,
+}: {
+  connection: GDBusConnection
+  engineName: string
+  objPath: string
+}) => runWithCatch(() => addon.engineNew(engineName, objPath, connection))
+
 const engineRegisterProperties = (list: IBusPropList) => {
   runWithCatch(() => {
     addon.engineRegisterProperties(list)
@@ -182,13 +193,19 @@ const engineUpdateAuxiliaryText = ({
   })
 }
 
-const engineUpdateLookupTable = (isVisible: boolean) => {
+const engineUpdateLookupTable = ({
+  isVisible,
+  table,
+}: {
+  isVisible: boolean
+  table: IBusLookupTable
+}) => {
   if (typeof isVisible !== "boolean") {
     throw new Error("Incorrect param isVisible for engineUpdateLookupTable")
   }
 
   runWithCatch(() => {
-    addon.engineUpdateLookupTable(isVisible)
+    addon.engineUpdateLookupTable(table, isVisible)
   })
 }
 
@@ -207,12 +224,12 @@ const engineUpdatePreeditText = ({
 }
 
 const factoryAddEngine = ({
+  engineName,
   factory,
-  imeName,
 }: {
+  engineName: string
   factory: IBusFactory
-  imeName: string
-}) => runWithCatch(() => addon.factoryAddEngine(factory, imeName))
+}) => runWithCatch(() => addon.factoryAddEngine(factory, engineName))
 
 const factoryNew = (connection: GDBusConnection) =>
   runWithCatch(() => addon.factoryNew(connection))
@@ -262,87 +279,134 @@ const isKeyWithCtrl = (keyInfo: KeyInfo) =>
 const isKeyWithShift = (keyInfo: KeyInfo) =>
   (keyInfo.modifiers & IBusModifierType.IBUS_SHIFT_MASK) !== 0
 
-const lookupTableAppendCandidate = (text: IBusText) => {
+const lookupTableAppendCandidate = ({
+  table,
+  text,
+}: {
+  table: IBusLookupTable
+  text: IBusText
+}) => {
   runWithCatch(() => {
-    addon.lookupTableAppendCandidate(text)
+    addon.lookupTableAppendCandidate(table, text)
   })
 }
 
-const lookupTableClear = () => {
+const lookupTableClear = (table: IBusLookupTable) => {
   runWithCatch(() => {
-    addon.lookupTableClear()
+    addon.lookupTableClear(table)
   })
 }
 
-const lookupTableCursorDown = () => {
+const lookupTableCursorDown = (table: IBusLookupTable) => {
   runWithCatch(() => {
-    addon.lookupTableCursorDown()
+    addon.lookupTableCursorDown(table)
   })
 }
 
-const lookupTableCursorUp = () => {
+const lookupTableCursorUp = (table: IBusLookupTable) => {
   runWithCatch(() => {
-    addon.lookupTableCursorUp()
+    addon.lookupTableCursorUp(table)
   })
 }
 
-const lookupTableGetCursorInPage = () =>
-  runWithCatch(() => addon.lookupTableGetCursorInPage())
+const lookupTableGetCursorInPage = (table: IBusLookupTable) =>
+  runWithCatch(() => addon.lookupTableGetCursorInPage(table))
 
-const lookupTableGetCursorPos = () =>
-  runWithCatch(() => addon.lookupTableGetCursorPos())
+const lookupTableGetCursorPos = (table: IBusLookupTable) =>
+  runWithCatch(() => addon.lookupTableGetCursorPos(table))
 
-const lookupTableGetNumberOfCandidates = () =>
-  runWithCatch(() => addon.lookupTableGetNumberOfCandidates())
+const lookupTableGetNumberOfCandidates = (table: IBusLookupTable) =>
+  runWithCatch(() => addon.lookupTableGetNumberOfCandidates(table))
 
-const lookupTableGetPageSize = () =>
-  runWithCatch(() => addon.lookupTableGetPageSize())
+const lookupTableGetPageSize = (table: IBusLookupTable) =>
+  runWithCatch(() => addon.lookupTableGetPageSize(table))
 
-const lookupTablePageDown = () => {
+const lookupTableNew = ({
+  cursorPos,
+  isRound,
+  isVisible,
+  pageSize,
+}: {
+  cursorPos: number
+  isRound: boolean
+  isVisible: boolean
+  pageSize: number
+}) =>
+  runWithCatch(() =>
+    addon.lookupTableNew(pageSize, cursorPos, isVisible, isRound)
+  )
+
+const lookupTablePageDown = (table: IBusLookupTable) => {
   runWithCatch(() => {
-    addon.lookupTablePageDown()
+    addon.lookupTablePageDown(table)
   })
 }
 
-const lookupTablePageUp = () => {
+const lookupTablePageUp = (table: IBusLookupTable) => {
   runWithCatch(() => {
-    addon.lookupTablePageUp()
+    addon.lookupTablePageUp(table)
   })
 }
 
-const lookupTableSetCursorPos = (cursorPos: number) => {
+const lookupTableSetCursorPos = ({
+  cursorPos,
+  table,
+}: {
+  cursorPos: number
+  table: IBusLookupTable
+}) => {
   runWithCatch(() => {
-    addon.lookupTableSetCursorPos(cursorPos)
+    addon.lookupTableSetCursorPos(table, cursorPos)
   })
 }
 
-const lookupTableSetCursorVisible = (isVisible: boolean) => {
+const lookupTableSetCursorVisible = ({
+  isVisible,
+  table,
+}: {
+  isVisible: boolean
+  table: IBusLookupTable
+}) => {
   runWithCatch(() => {
-    addon.lookupTableSetCursorVisible(isVisible)
+    addon.lookupTableSetCursorVisible(table, isVisible)
   })
 }
 
 const lookupTableSetLabel = ({
   candidateIndex,
   label,
+  table,
 }: {
   candidateIndex: number
   label: string
+  table: IBusLookupTable
 }) => {
   runWithCatch(() => {
-    addon.lookupTableSetLabel(candidateIndex, label)
+    addon.lookupTableSetLabel(table, candidateIndex, label)
   })
 }
 
-const lookupTableSetOrientation = (orientation: IBusOrientation) => {
+const lookupTableSetOrientation = ({
+  orientation,
+  table,
+}: {
+  orientation: IBusOrientation
+  table: IBusLookupTable
+}) => {
   runWithCatch(() => {
-    addon.lookupTableSetOrientation(orientation)
+    addon.lookupTableSetOrientation(table, orientation)
   })
 }
 
-const lookupTableSetPageSize = (pageSize: number) => {
+const lookupTableSetPageSize = ({
+  pageSize,
+  table,
+}: {
+  pageSize: number
+  table: IBusLookupTable
+}) => {
   runWithCatch(() => {
-    addon.lookupTableSetPageSize(pageSize)
+    addon.lookupTableSetPageSize(table, pageSize)
   })
 }
 
@@ -393,9 +457,9 @@ const textSetAttributes = ({
   })
 }
 
-const lookupTableSetRound = () => {
+const lookupTableSetRound = (table: IBusLookupTable) => {
   runWithCatch(() => {
-    addon.lookupTableSetRound()
+    addon.lookupTableSetRound(table)
   })
 }
 
@@ -411,6 +475,7 @@ export {
   IBusAttrUnderline,
   IBusEngineDesc,
   IBusFactory,
+  IBusLookupTable,
   IBusModifierType,
   IBusOrientation,
   IBusPropList,
@@ -450,6 +515,7 @@ export {
   engineHideAuxiliaryText,
   engineHideLookupTable,
   engineHidePreeditText,
+  engineNew,
   engineRegisterProperties,
   engineShowAuxiliaryText,
   engineShowLookupTable,
@@ -469,6 +535,7 @@ export {
   lookupTableGetCursorPos,
   lookupTableGetNumberOfCandidates,
   lookupTableGetPageSize,
+  lookupTableNew,
   lookupTablePageDown,
   lookupTablePageUp,
   lookupTableSetCursorPos,

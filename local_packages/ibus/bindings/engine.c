@@ -132,6 +132,39 @@ napi_value EngineHidePreeditText(napi_env env, napi_callback_info info)
     RETURN_UNDEFINED;
 }
 
+// https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-new
+napi_value EngineNew(napi_env env, napi_callback_info info)
+{
+    size_t argc = 3;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    size_t str_size;
+    size_t str_size_read;
+
+    napi_get_value_string_utf8(env, args[0], NULL, 0, &str_size);
+    str_size += 1;
+    char * engine_name  = (char*)calloc(str_size + 1, sizeof(char));
+    napi_get_value_string_utf8(env, args[0], engine_name, str_size, &str_size_read);
+
+    napi_get_value_string_utf8(env, args[1], NULL, 0, &str_size);
+    str_size += 1;
+    char * obj_path  = (char*)calloc(str_size + 1, sizeof(char));
+    napi_get_value_string_utf8(env, args[1], obj_path, str_size, &str_size_read);
+
+    GDBusConnection * connection =  NULL;
+    napi_unwrap(env, args[2], (void **)&connection);
+
+    /* @TODO */
+    IBusEngine * engine = ibus_engine_new(engine_name, obj_path, connection);
+
+    free(engine_name);
+
+    g_object_ref_sink(engine);
+
+    RETURN_OBJ_WRAP("IBusEngine", engine);
+}
+
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-register-properties
 napi_value EngineRegisterProperties(napi_env env, napi_callback_info info)
 {
@@ -205,18 +238,17 @@ napi_value EngineUpdateAuxiliaryText(napi_env env, napi_callback_info info)
 // https://ibus.github.io/docs/ibus-1.5/IBusEngine.html#ibus-engine-update-lookup-table
 napi_value EngineUpdateLookupTable(napi_env env, napi_callback_info info)
 {
-    size_t argc = 1;
+    size_t argc = 2;
     napi_value args[argc];
     napi_get_cb_info(env, info, &argc, args, NULL, NULL);
 
-    bool is_visible;
-    napi_get_value_bool(env, args[0], &is_visible);
+    IBusLookupTable * table =  NULL;
+    napi_unwrap(env, args[0], (void **)&table);
 
-    ibus_engine_update_lookup_table(
-        (IBusEngine *) &custom_ime_engine,
-        custom_ime_lookup_table,
-        is_visible
-    );
+    bool is_visible;
+    napi_get_value_bool(env, args[1], &is_visible);
+
+    ibus_engine_update_lookup_table((IBusEngine *) &custom_ime_engine, table, is_visible);
 
     RETURN_UNDEFINED;
 }

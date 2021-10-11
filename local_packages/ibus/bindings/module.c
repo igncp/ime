@@ -10,7 +10,6 @@
 
 extern ImeHandlers ime_handlers;
 extern IBusCustomImeEngine custom_ime_engine;
-extern IBusLookupTable * custom_ime_lookup_table;
 
 napi_value RegisterHandlers(napi_env env, napi_callback_info info)
 {
@@ -73,6 +72,7 @@ napi_value MainModule(napi_env env, napi_value exports)
     NODE_EXPOSE_FN(EngineHideAuxiliaryText, "engineHideAuxiliaryText");
     NODE_EXPOSE_FN(EngineHideLookupTable, "engineHideLookupTable");
     NODE_EXPOSE_FN(EngineHidePreeditText, "engineHidePreeditText");
+    NODE_EXPOSE_FN(EngineNew, "engineNew");
     NODE_EXPOSE_FN(EngineRegisterProperties, "engineRegisterProperties");
     NODE_EXPOSE_FN(EngineShowAuxiliaryText, "engineShowAuxiliaryText");
     NODE_EXPOSE_FN(EngineShowLookupTable, "engineShowLookupTable");
@@ -91,6 +91,7 @@ napi_value MainModule(napi_env env, napi_value exports)
     NODE_EXPOSE_FN(LookupTableGetCursorPos, "lookupTableGetCursorPos");
     NODE_EXPOSE_FN(LookupTableGetNumberOfCandidates, "lookupTableGetNumberOfCandidates");
     NODE_EXPOSE_FN(LookupTableGetPageSize, "lookupTableGetPageSize");
+    NODE_EXPOSE_FN(LookupTableNew, "lookupTableNew");
     NODE_EXPOSE_FN(LookupTablePageDown, "lookupTablePageDown");
     NODE_EXPOSE_FN(LookupTablePageUp, "lookupTablePageUp");
     NODE_EXPOSE_FN(LookupTableSetCursorPos, "lookupTableSetCursorPos");

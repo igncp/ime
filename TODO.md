@@ -3,7 +3,7 @@
     - [x] Auxiliary text
     - [x] Property
     - [x] Bus
-    - [ ] Lookup table with transitions, remove the global one
+    - [x] Lookup table with transitions, remove the global one
     - [ ] Engine
 
 ## General Improvements
@@ -13,7 +13,7 @@
     - Add error handling
 - Improve key detection, consider adding a dependency
 - Memory cleanup on teardown
-- Don't have a global engine, or lookup table in C but pass it from JS
+- Don't have a global engine in C but pass it from JS instead
 
 ## Challenges
 

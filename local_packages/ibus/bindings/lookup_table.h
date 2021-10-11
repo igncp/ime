@@ -12,6 +12,7 @@ napi_value LookupTableGetCursorInPage(napi_env env, napi_callback_info info);
 napi_value LookupTableGetCursorPos(napi_env env, napi_callback_info info);
 napi_value LookupTableGetNumberOfCandidates(napi_env env, napi_callback_info info);
 napi_value LookupTableGetPageSize(napi_env env, napi_callback_info info);
+napi_value LookupTableNew(napi_env env, napi_callback_info info);
 napi_value LookupTablePageDown(napi_env env, napi_callback_info info);
 napi_value LookupTablePageUp(napi_env env, napi_callback_info info);
 napi_value LookupTableSetCursorPos(napi_env env, napi_callback_info info);

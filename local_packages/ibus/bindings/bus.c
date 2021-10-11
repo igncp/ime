@@ -141,12 +141,12 @@ napi_value FactoryAddEngine(napi_env env, napi_callback_info info)
     str_size += 1;
 
     size_t str_size_read;
-    char * ime_name  = (char*)calloc(str_size + 1, sizeof(char));
-    napi_get_value_string_utf8(env, args[1], ime_name, str_size, &str_size_read);
+    char * engine_name  = (char*)calloc(str_size + 1, sizeof(char));
+    napi_get_value_string_utf8(env, args[1], engine_name, str_size, &str_size_read);
 
-    ibus_factory_add_engine(factory, ime_name, (ibus_custom_ime_engine_get_type()));
+    ibus_factory_add_engine(factory, engine_name, (ibus_custom_ime_engine_get_type()));
 
-    free(ime_name);
+    free(engine_name);
 
     RETURN_UNDEFINED;
 }
@@ -154,7 +154,7 @@ napi_value FactoryAddEngine(napi_env env, napi_callback_info info)
 // https://ibus.github.io/docs/ibus-1.5/IBusFactory.html#ibus-factory-new
 napi_value FactoryNew(napi_env env, napi_callback_info info)
 {
-    size_t argc = 2;
+    size_t argc = 1;
     napi_value args[argc];
     napi_get_cb_info(env, info, &argc, args, NULL, NULL);
 

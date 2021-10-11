@@ -34,8 +34,10 @@ type GDBusConnection = IBusType<"GDBusConnection">
 type IBusAttrList = IBusType<"IBusAttrList">
 type IBusAttribute = IBusType<"IBusAttribute">
 type IBusBus = IBusType<"IBusBus">
+type IBusEngine = IBusType<"IBusEngine">
 type IBusEngineDesc = IBusType<"IBusEngineDesc">
 type IBusFactory = IBusType<"IBusFactory">
+type IBusLookupTable = IBusType<"IBusLookupTable">
 type IBusPropList = IBusType<"IBusPropList">
 type IBusProperty = IBusType<"IBusProperty">
 type IBusText = IBusType<"IBusText">
@@ -89,36 +91,57 @@ type Addon = {
   engineHideAuxiliaryText: () => void
   engineHideLookupTable: () => void
   engineHidePreeditText: () => void
+  engineNew: (
+    engineName: string,
+    objPath: string,
+    connection: GDBusConnection
+  ) => IBusEngine
   engineRegisterProperties: (list: IBusPropList) => void
   engineShowAuxiliaryText: () => void
   engineShowLookupTable: () => void
   engineShowPreeditText: () => void
   engineUpdateAuxiliaryText: (text: string, isVisible: boolean) => void
-  engineUpdateLookupTable: (isVisible: boolean) => void
+  engineUpdateLookupTable: (table: IBusLookupTable, isVisible: boolean) => void
   engineUpdatePreeditText: (
     text: string,
     cursorPos: number,
     isVisible: boolean
   ) => void
-  factoryAddEngine: (factory: IBusFactory, imeName: string) => void
+  factoryAddEngine: (factory: IBusFactory, engineName: string) => void
   factoryNew: (bus: GDBusConnection) => IBusFactory
   init: () => void
-  lookupTableAppendCandidate: (text: IBusText) => void
-  lookupTableClear: () => void
-  lookupTableCursorDown: () => void
-  lookupTableCursorUp: () => void
-  lookupTableGetCursorInPage: () => number
-  lookupTableGetCursorPos: () => number
-  lookupTableGetNumberOfCandidates: () => number
-  lookupTableGetPageSize: () => number
-  lookupTablePageDown: () => void
-  lookupTablePageUp: () => void
-  lookupTableSetCursorPos: (cursorPos: number) => void
-  lookupTableSetCursorVisible: (isVisible: boolean) => void
-  lookupTableSetLabel: (candidateIndex: number, label: string) => void
-  lookupTableSetOrientation: (orientation: IBusOrientation) => void
-  lookupTableSetPageSize: (pageSize: number) => void
-  lookupTableSetRound: () => void
+  lookupTableAppendCandidate: (table: IBusLookupTable, text: IBusText) => void
+  lookupTableClear: (table: IBusLookupTable) => void
+  lookupTableCursorDown: (table: IBusLookupTable) => void
+  lookupTableCursorUp: (table: IBusLookupTable) => void
+  lookupTableGetCursorInPage: (table: IBusLookupTable) => number
+  lookupTableGetCursorPos: (table: IBusLookupTable) => number
+  lookupTableGetNumberOfCandidates: (table: IBusLookupTable) => number
+  lookupTableGetPageSize: (table: IBusLookupTable) => number
+  lookupTableNew: (
+    pageSize: number,
+    cursorPos: number,
+    isVisible: boolean,
+    isRound: boolean
+  ) => IBusLookupTable
+  lookupTablePageDown: (table: IBusLookupTable) => void
+  lookupTablePageUp: (table: IBusLookupTable) => void
+  lookupTableSetCursorPos: (table: IBusLookupTable, cursorPos: number) => void
+  lookupTableSetCursorVisible: (
+    table: IBusLookupTable,
+    isVisible: boolean
+  ) => void
+  lookupTableSetLabel: (
+    table: IBusLookupTable,
+    candidateIndex: number,
+    label: string
+  ) => void
+  lookupTableSetOrientation: (
+    table: IBusLookupTable,
+    orientation: IBusOrientation
+  ) => void
+  lookupTableSetPageSize: (table: IBusLookupTable, pageSize: number) => void
+  lookupTableSetRound: (table: IBusLookupTable) => void
   main: () => void
   propListAppend: (list: IBusPropList, prop: IBusProperty) => void
   propListNew: () => IBusPropList
@@ -142,6 +165,7 @@ export {
   IBusBus,
   IBusEngineDesc,
   IBusFactory,
+  IBusLookupTable,
   IBusPropList,
   IBusProperty,
   IBusText,

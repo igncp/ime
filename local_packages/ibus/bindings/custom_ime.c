@@ -15,7 +15,6 @@ static void ibus_custom_ime_engine_init (IBusCustomImeEngine *custom_ime_engine)
 
 ImeHandlers ime_handlers = {};
 IBusCustomImeEngine custom_ime_engine;
-IBusLookupTable * custom_ime_lookup_table;
 
 G_DEFINE_TYPE (IBusCustomImeEngine, ibus_custom_ime_engine, IBUS_TYPE_ENGINE)
 
@@ -94,8 +93,8 @@ static gboolean ibus_custom_ime_engine_process_key_event (
 
 static void ibus_custom_ime_engine_property_activate(
     IBusEngine *engine,
-    const gchar      *key,
-    guint       state
+    const gchar * key,
+    guint state
 )
 {
     napi_value state_return;
@@ -137,8 +136,4 @@ static void ibus_custom_ime_engine_init (IBusCustomImeEngine * _custom_ime_engin
     printf("ibus_custom_ime_engine_init \n");
 
     custom_ime_engine = *_custom_ime_engine;
-
-    custom_ime_lookup_table = ibus_lookup_table_new(9, 0, TRUE, FALSE);
-
-    g_object_ref_sink(custom_ime_lookup_table);
 }

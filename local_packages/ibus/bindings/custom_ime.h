@@ -21,7 +21,6 @@ typedef struct _IBusCustomImeEngineClass IBusCustomImeEngineClass;
 
 extern ImeHandlers ime_handlers;
 extern IBusCustomImeEngine custom_ime_engine;
-extern IBusLookupTable * custom_ime_lookup_table;
 
 GType ibus_custom_ime_engine_get_type();
 

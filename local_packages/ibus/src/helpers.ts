@@ -58,8 +58,8 @@ const initFull = ({
   const factory = factoryNew(connection)
 
   factoryAddEngine({
+    engineName: imeName,
     factory,
-    imeName,
   })
 
   const busRequest = busRequestName({ bus, busName })
