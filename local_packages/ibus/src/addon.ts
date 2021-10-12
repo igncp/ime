@@ -37,9 +37,11 @@ type IBusBus = IBusType<"IBusBus">
 type IBusEngine = IBusType<"IBusEngine">
 type IBusEngineDesc = IBusType<"IBusEngineDesc">
 type IBusFactory = IBusType<"IBusFactory">
+type IBusInputContext = IBusType<"IBusInputContext">
 type IBusLookupTable = IBusType<"IBusLookupTable">
 type IBusPropList = IBusType<"IBusPropList">
 type IBusProperty = IBusType<"IBusProperty">
+type IBusService = IBusType<"IBusService">
 type IBusText = IBusType<"IBusText">
 
 type AttributeNewOpts = {
@@ -108,8 +110,13 @@ type Addon = {
     isVisible: boolean
   ) => void
   factoryAddEngine: (factory: IBusFactory, engineName: string) => void
+  factoryCreateEngine: (factory: IBusFactory, engineName: string) => IBusEngine
   factoryNew: (bus: GDBusConnection) => IBusFactory
   init: () => void
+  inputContextGetInputContext: (
+    path: string,
+    connection: GDBusConnection
+  ) => IBusInputContext
   lookupTableAppendCandidate: (table: IBusLookupTable, text: IBusText) => void
   lookupTableClear: (table: IBusLookupTable) => void
   lookupTableCursorDown: (table: IBusLookupTable) => void
@@ -141,7 +148,7 @@ type Addon = {
     orientation: IBusOrientation
   ) => void
   lookupTableSetPageSize: (table: IBusLookupTable, pageSize: number) => void
-  lookupTableSetRound: (table: IBusLookupTable) => void
+  lookupTableSetRound: (table: IBusLookupTable, isRound: boolean) => void
   main: () => void
   propListAppend: (list: IBusPropList, prop: IBusProperty) => void
   propListNew: () => IBusPropList
@@ -149,6 +156,9 @@ type Addon = {
   propertyNew: (opts: PropertyNewOpts) => IBusProperty
   propertySetState: (property: IBusProperty, newState: IBusPropState) => void
   registerHandlers: (handlers: Handlers) => void
+  serviceGetObjectPath: () => string
+  serviceNew: (connection: GDBusConnection, path: string) => IBusService
+  serviceRegister: (connection: GDBusConnection) => boolean
   textNewFromString: (text: string) => IBusText
   textSetAttributes: (text: IBusText, list: IBusAttrList) => void
 }
@@ -165,9 +175,11 @@ export {
   IBusBus,
   IBusEngineDesc,
   IBusFactory,
+  IBusInputContext,
   IBusLookupTable,
   IBusPropList,
   IBusProperty,
+  IBusService,
   IBusText,
   KeyInfo,
   PropertyActivate,

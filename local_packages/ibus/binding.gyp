@@ -8,6 +8,7 @@
         "./bindings/lookup_table.c",
         "./bindings/module.c",
         "./bindings/property.c",
+        "./bindings/service.c",
         "./bindings/share.c",
         "./bindings/text.c",
       ],

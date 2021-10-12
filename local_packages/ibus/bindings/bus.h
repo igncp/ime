@@ -11,4 +11,6 @@ napi_value BusListEngines(napi_env env, napi_callback_info info);
 napi_value BusNew(napi_env env, napi_callback_info info);
 napi_value BusRequestName(napi_env env, napi_callback_info info);
 napi_value FactoryAddEngine(napi_env env, napi_callback_info info);
+napi_value FactoryCreateEngine(napi_env env, napi_callback_info info);
 napi_value FactoryNew(napi_env env, napi_callback_info info);
+napi_value InputContextGetInputContext(napi_env env, napi_callback_info info);

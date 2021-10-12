@@ -114,12 +114,12 @@ napi_value BusRequestName(napi_env env, napi_callback_info info)
     str_size += 1;
 
     size_t str_size_read;
-    char * bus_name  = (char*)calloc(str_size + 1, sizeof(char));
-    napi_get_value_string_utf8(env, args[1], bus_name, str_size, &str_size_read);
+    char * component_name  = (char*)calloc(str_size + 1, sizeof(char));
+    napi_get_value_string_utf8(env, args[1], component_name, str_size, &str_size_read);
 
-    guint32 request_result = ibus_bus_request_name(bus, bus_name, 0);
+    guint32 request_result = ibus_bus_request_name(bus, component_name, 0);
 
-    free(bus_name);
+    free(component_name);
 
     napi_value result_value;
     napi_create_int32(env, request_result, &result_value);
@@ -151,6 +151,31 @@ napi_value FactoryAddEngine(napi_env env, napi_callback_info info)
     RETURN_UNDEFINED;
 }
 
+// https://ibus.github.io/docs/ibus-1.5/IBusFactory.html#ibus-factory-create-engine
+napi_value FactoryCreateEngine(napi_env env, napi_callback_info info)
+{
+    size_t argc = 2;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    IBusFactory * factory =  NULL;
+    napi_unwrap(env, args[0], (void **)&factory);
+
+    size_t str_size;
+    napi_get_value_string_utf8(env, args[1], NULL, 0, &str_size);
+    str_size += 1;
+
+    size_t str_size_read;
+    char * engine_name  = (char*)calloc(str_size + 1, sizeof(char));
+    napi_get_value_string_utf8(env, args[1], engine_name, str_size, &str_size_read);
+
+    IBusEngine * engine = ibus_factory_create_engine(factory, engine_name);
+
+    free(engine_name);
+
+    RETURN_OBJ_WRAP("IBusEngine", engine);
+}
+
 // https://ibus.github.io/docs/ibus-1.5/IBusFactory.html#ibus-factory-new
 napi_value FactoryNew(napi_env env, napi_callback_info info)
 {
@@ -164,4 +189,28 @@ napi_value FactoryNew(napi_env env, napi_callback_info info)
     IBusFactory * factory = ibus_factory_new(connection);
 
     RETURN_OBJ_WRAP("IBusFactory", factory);
+}
+
+
+// https://ibus.github.io/docs/ibus-1.5/IBusInputContext.html#ibus-input-context-get-input-context
+napi_value InputContextGetInputContext(napi_env env, napi_callback_info info)
+{
+    size_t argc = 2;
+    napi_value args[argc];
+    napi_get_cb_info(env, info, &argc, args, NULL, NULL);
+
+    size_t str_size;
+    size_t str_size_read;
+
+    napi_get_value_string_utf8(env, args[0], NULL, 0, &str_size);
+    str_size += 1;
+    char * content  = (char*)calloc(str_size + 1, sizeof(char));
+    napi_get_value_string_utf8(env, args[0], content, str_size, &str_size_read);
+
+    GDBusConnection * connection =  NULL;
+    napi_unwrap(env, args[1], (void **)&connection);
+
+    IBusInputContext * input_context = ibus_input_context_get_input_context(content, connection);
+
+    RETURN_OBJ_WRAP("IBusInputContext", input_context);
 }

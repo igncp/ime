@@ -72,6 +72,10 @@ class PreeditTest {
 
     console.log("preedit.js: keycode", keycode, key, keyInfo.modifiers)
 
+    const servicePath = ibus.serviceGetObjectPath()
+
+    console.log("preedit.ts: servicePath", servicePath)
+
     if (ibus.helpers.isKeyWithCtrl(keyInfo) || keycode === KeyCodes.SHIFT) {
       return KeyEventReturn.NativeHandling
     }

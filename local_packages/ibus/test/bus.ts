@@ -37,7 +37,7 @@ const main = () => {
     propertyActivate: () => {},
   })
 
-  const { bus } = ibusHelpers.initFull({
+  const { bus, connection } = ibusHelpers.initFull({
     busName: config.busName,
     imeName: config.imeName,
   })
@@ -53,9 +53,13 @@ const main = () => {
     enginesInfos.find((engineInfo) => engineInfo.name === "custom-ime")
   )
 
-  const currentInputContext = ibus.busCurrentInputContext(bus)
+  const currentInputContextString = ibus.busCurrentInputContext(bus)
+  const inputContext = ibus.inputContextGetInputContext({
+    connection,
+    path: currentInputContextString,
+  })
 
-  console.log("bus.ts: currentInputContext", currentInputContext)
+  console.log("bus.ts: inputContext", inputContext)
 
   ibus.main()
 

@@ -1,27 +1,22 @@
 import * as ibus from "../src"
+import { Bus, Factory } from "../src/helpers"
 
 const main = async () => {
   ibus.init()
 
-  const bus = ibus.busNew()
-  const connection = ibus.busGetConnection(bus)
-  const engineName = "foo"
+  const bus = Bus.new()
+  const connection = bus.getConnection()
 
-  const engine = ibus.engineNew({
-    connection,
-    engineName,
-    objPath: "/org/freedesktop/IBus/Engine/1",
-  })
-  const factory = ibus.factoryNew(connection)
+  const engineName = "custom-ime"
 
-  ibus.factoryAddEngine({
-    engineName,
-    factory,
-  })
+  const factory = Factory.new(connection)
 
-  console.log("engine.ts: engine", engine)
+  factory.addEngine(engineName)
+
+  bus.requestName("im.custom-ime.CustomIme")
 
   console.log("Waiting")
+  ibus.main()
 
   await new Promise((resolve) => setTimeout(resolve, 1000))
 }

@@ -13,7 +13,7 @@
     - Add error handling
 - Improve key detection, consider adding a dependency
 - Memory cleanup on teardown
-- Don't have a global engine in C but pass it from JS instead
+- Create models for interacting with ibus and hiding the wrapped types
 
 ## Challenges
 

@@ -21,6 +21,14 @@ import {
   factoryNew,
   init,
 } from "."
+import { AttrList } from "./models/AttrList"
+import { Attribute } from "./models/Attribute"
+import { Bus } from "./models/Bus"
+import { Connection } from "./models/Connection"
+import { Engine } from "./models/Engine"
+import { Factory } from "./models/Factory"
+import { LookupTable } from "./models/LookupTable"
+import { Text } from "./models/Text"
 
 const buildEngineDescInfo = (engineDesc: IBusEngineDesc) => ({
   author: engineDescGetAuthor(engineDesc),
@@ -71,7 +79,19 @@ const initFull = ({
 
   return {
     bus,
+    connection,
   }
 }
 
-export { initFull, buildEngineDescInfo }
+export {
+  AttrList,
+  Attribute,
+  Bus,
+  Connection,
+  Engine,
+  Factory,
+  LookupTable,
+  Text,
+  buildEngineDescInfo,
+  initFull,
+}

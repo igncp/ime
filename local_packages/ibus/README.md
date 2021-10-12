@@ -8,7 +8,7 @@ naming and signatures similar to the ones provided by the C functions.
 You can see the exposed functions in:
 
 - [C bindings](./bindings/module.c): All the exposed functions are listed here
-- [Custom IME](./bindings/custom_ime.h): Some default setup to speed the IME development, will be deprecated in the future
+- [Custom IME](./bindings/custom_ime.h): Required to register the engine GType
 - [Node.js side](./src/index.ts): This is the main Node.js client to use from external consumers
 - [Node.js helpers](./src/helpers.ts): Some utility functions that use the Node.js for common operations
 

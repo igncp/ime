@@ -7,6 +7,7 @@ import addon, {
   IBusBus,
   IBusEngineDesc,
   IBusFactory,
+  IBusInputContext,
   IBusLookupTable,
   IBusPropList,
   IBusProperty,
@@ -231,6 +232,14 @@ const factoryAddEngine = ({
   factory: IBusFactory
 }) => runWithCatch(() => addon.factoryAddEngine(factory, engineName))
 
+const factoryCreateEngine = ({
+  engineName,
+  factory,
+}: {
+  engineName: string
+  factory: IBusFactory
+}) => runWithCatch(() => addon.factoryCreateEngine(factory, engineName))
+
 const factoryNew = (connection: GDBusConnection) =>
   runWithCatch(() => addon.factoryNew(connection))
 
@@ -278,6 +287,14 @@ const isKeyWithCtrl = (keyInfo: KeyInfo) =>
 
 const isKeyWithShift = (keyInfo: KeyInfo) =>
   (keyInfo.modifiers & IBusModifierType.IBUS_SHIFT_MASK) !== 0
+
+const inputContextGetInputContext = ({
+  connection,
+  path,
+}: {
+  connection: GDBusConnection
+  path: string
+}) => runWithCatch(() => addon.inputContextGetInputContext(path, connection))
 
 const lookupTableAppendCandidate = ({
   table,
@@ -442,6 +459,20 @@ const propertySetState = ({
   })
 }
 
+const serviceGetObjectPath = () =>
+  runWithCatch(() => addon.serviceGetObjectPath())
+
+const serviceNew = ({
+  connection,
+  path,
+}: {
+  connection: GDBusConnection
+  path: string
+}) => runWithCatch(() => addon.serviceNew(connection, path))
+
+const serviceRegister = (connection: GDBusConnection) =>
+  runWithCatch(() => addon.serviceRegister(connection))
+
 const textNewFromString = (text: string) =>
   runWithCatch(() => addon.textNewFromString(text))
 
@@ -457,9 +488,15 @@ const textSetAttributes = ({
   })
 }
 
-const lookupTableSetRound = (table: IBusLookupTable) => {
+const lookupTableSetRound = ({
+  isRound,
+  table,
+}: {
+  isRound: boolean
+  table: IBusLookupTable
+}) => {
   runWithCatch(() => {
-    addon.lookupTableSetRound(table)
+    addon.lookupTableSetRound(table, isRound)
   })
 }
 
@@ -471,10 +508,14 @@ const helpers = {
 
 export {
   GDBusConnection,
+  IBusAttrList,
   IBusAttrType,
   IBusAttrUnderline,
+  IBusAttribute,
+  IBusBus,
   IBusEngineDesc,
   IBusFactory,
+  IBusInputContext,
   IBusLookupTable,
   IBusModifierType,
   IBusOrientation,
@@ -524,9 +565,11 @@ export {
   engineUpdateLookupTable,
   engineUpdatePreeditText,
   factoryAddEngine,
+  factoryCreateEngine,
   factoryNew,
   helpers,
   init,
+  inputContextGetInputContext,
   lookupTableAppendCandidate,
   lookupTableClear,
   lookupTableCursorDown,
@@ -551,6 +594,9 @@ export {
   propertyNew,
   propertySetState,
   registerHandlers,
+  serviceGetObjectPath,
+  serviceNew,
+  serviceRegister,
   textNewFromString,
   textSetAttributes,
 }

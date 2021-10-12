@@ -1,12 +1,13 @@
 #include <node_api.h>
 
-#include "custom_ime.h"
-#include "lookup_table.h"
-#include "engine.h"
-#include "property.h"
-#include "text.h"
-#include "share.h"
 #include "bus.h"
+#include "custom_ime.h"
+#include "engine.h"
+#include "lookup_table.h"
+#include "property.h"
+#include "service.h"
+#include "share.h"
+#include "text.h"
 
 extern ImeHandlers ime_handlers;
 extern IBusCustomImeEngine custom_ime_engine;
@@ -81,8 +82,10 @@ napi_value MainModule(napi_env env, napi_value exports)
     NODE_EXPOSE_FN(EngineUpdateLookupTable, "engineUpdateLookupTable");
     NODE_EXPOSE_FN(EngineUpdatePreeditText, "engineUpdatePreeditText");
     NODE_EXPOSE_FN(FactoryAddEngine, "factoryAddEngine");
+    NODE_EXPOSE_FN(FactoryCreateEngine, "factoryCreateEngine");
     NODE_EXPOSE_FN(FactoryNew, "factoryNew");
     NODE_EXPOSE_FN(Init, "init");
+    NODE_EXPOSE_FN(InputContextGetInputContext, "inputContextGetInputContext");
     NODE_EXPOSE_FN(LookupTableAppendCandidate, "lookupTableAppendCandidate");
     NODE_EXPOSE_FN(LookupTableClear, "lookupTableClear");
     NODE_EXPOSE_FN(LookupTableCursorDown, "lookupTableCursorDown");
@@ -107,6 +110,9 @@ napi_value MainModule(napi_env env, napi_value exports)
     NODE_EXPOSE_FN(PropertyNew, "propertyNew");
     NODE_EXPOSE_FN(PropertySetState, "propertySetState");
     NODE_EXPOSE_FN(RegisterHandlers, "registerHandlers");
+    NODE_EXPOSE_FN(ServiceGetObjectPath, "serviceGetObjectPath");
+    NODE_EXPOSE_FN(ServiceNew, "serviceNew");
+    NODE_EXPOSE_FN(ServiceRegister, "serviceRegister");
     NODE_EXPOSE_FN(TextNewFromString, "textNewFromString");
     NODE_EXPOSE_FN(TextSetAttributes, "textSetAttributes");
 

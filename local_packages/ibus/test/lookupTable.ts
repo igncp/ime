@@ -1,13 +1,20 @@
-import * as ibus from "../src"
+import {
+  KeyCodes,
+  KeyEventReturn,
+  KeyInfo,
+  helpers,
+  main as mainIBus,
+  registerHandlers,
+} from "../src"
 import * as ibusHelpers from "../src/helpers"
 
-const { KeyCodes, KeyEventReturn } = ibus
+const { AttrList, Attribute, Engine, LookupTable, Text } = ibusHelpers
 
 const disableHandler = () => {
   console.log("disable called from JS")
 }
 
-const table = ibus.lookupTableNew({
+const table = LookupTable.create({
   cursorPos: 1,
   isRound: false,
   isVisible: true,
@@ -16,22 +23,17 @@ const table = ibus.lookupTableNew({
 
 const enableHandler = () => {
   console.log("enable called from JS")
-  ibus.lookupTableSetOrientation({
-    orientation: ibus.IBusOrientation.IBUS_ORIENTATION_VERTICAL,
-    table,
-  })
-  // ibus.lookupTableSetCursorVisible(false)
-  ibus.lookupTableSetPageSize({
-    pageSize: 5,
-    table,
-  })
-  ibus.lookupTableSetRound(table)
+  table.setOrientation(LookupTable.IBusOrientation.IBUS_ORIENTATION_VERTICAL)
+
+  table.setCursorVisible(true)
+  table.setPageSize(5)
+  table.setRound(false)
 }
 
-const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
+const keyEventHandler = (keyInfo: KeyInfo): boolean => {
   const key = String.fromCharCode(keyInfo.keyval) || ""
 
-  const isReleasedKey = ibus.helpers.isReleasedKey(keyInfo)
+  const isReleasedKey = helpers.isReleasedKey(keyInfo)
 
   if (isReleasedKey) {
     return KeyEventReturn.NativeHandling
@@ -40,51 +42,51 @@ const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
   const { keycode } = keyInfo
 
   if (keycode === KeyCodes.UP) {
-    ibus.lookupTableCursorUp(table)
-    ibus.engineUpdateLookupTable({ isVisible: true, table })
+    table.cursorUp()
+    Engine.updateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (keycode === KeyCodes.DOWN) {
-    ibus.lookupTableCursorDown(table)
-    ibus.engineUpdateLookupTable({ isVisible: true, table })
+    table.cursorDown()
+    Engine.updateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (keycode === KeyCodes.PAGE_UP) {
-    ibus.lookupTablePageUp(table)
-    ibus.engineUpdateLookupTable({ isVisible: true, table })
+    table.pageUp()
+    Engine.updateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (keycode === KeyCodes.PAGE_DOWN) {
-    ibus.lookupTablePageDown(table)
-    ibus.engineUpdateLookupTable({ isVisible: true, table })
+    table.pageDown()
+    Engine.updateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
-  const candidatesNum = ibus.lookupTableGetNumberOfCandidates(table)
+  const candidatesNum = table.getNumberOfCandidates()
 
   if (key === "l") {
     const textStr = `Sample ${candidatesNum + 1}`
-    const text = ibus.textNewFromString(textStr)
-    const list = ibus.attrListNew()
-    const attrUnderline = ibus.attributeNew({
+    const text = Text.newFromString(textStr)
+    const list = AttrList.create()
+    const attrUnderline = Attribute.new({
       endIndex: textStr.length,
       startIndex: 0,
-      type: ibus.IBusAttrType.IBUS_ATTR_TYPE_UNDERLINE,
-      value: ibus.IBusAttrUnderline.IBUS_ATTR_UNDERLINE_SINGLE,
+      type: Attribute.IBusAttrType.IBUS_ATTR_TYPE_UNDERLINE,
+      value: Attribute.IBusAttrUnderline.IBUS_ATTR_UNDERLINE_SINGLE,
     })
-    const attrForegroundFirst = ibus.attrForegroundNew({
+    const attrForegroundFirst = Attribute.newForeground({
       color: 0x00ff00,
       endIndex: "Sample".length,
       startIndex: 0,
     })
-    const attrForegroundSecond = ibus.attrForegroundNew({
+    const attrForegroundSecond = Attribute.newForeground({
       color: 0x0000ff,
       endIndex: textStr.length,
       startIndex: "Sample ".length,
@@ -92,20 +94,19 @@ const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
 
     ;[attrUnderline, attrForegroundFirst, attrForegroundSecond].forEach(
       (attr) => {
-        ibus.attrListAppend({ attr, list })
+        list.append(attr)
       }
     )
 
-    ibus.textSetAttributes({ list, text })
-
-    ibus.lookupTableAppendCandidate({ table, text })
+    text.setAttributes(list)
+    table.appendCandidate(text)
   } else if (key === "p") {
-    ibus.engineHideLookupTable()
-    ibus.lookupTableClear(table)
+    Engine.hideLookupTable()
+    table.clear()
   } else if (key === "i" && candidatesNum > 0) {
-    const cursorPos = ibus.lookupTableGetCursorPos(table)
-    const pageSize = ibus.lookupTableGetPageSize(table)
-    const rowIndex = ibus.lookupTableGetCursorInPage(table)
+    const cursorPos = table.getCursorPos()
+    const pageSize = table.getPageSize()
+    const rowIndex = table.getCursorInPage()
 
     console.log(
       "main.js: rowIndex",
@@ -116,18 +117,21 @@ const keyEventHandler = (keyInfo: ibus.KeyInfo): boolean => {
       cursorPos
     )
 
-    ibus.lookupTableSetLabel({ candidateIndex: rowIndex, label: "ABC", table })
-    ibus.engineUpdateLookupTable({ isVisible: true, table })
+    table.setLabel({
+      candidateIndex: rowIndex,
+      label: "ABC",
+    })
+    Engine.updateLookupTable({ isVisible: true, table })
 
     return KeyEventReturn.CustomHandling
   }
 
   if (key !== "p" && key !== "i") {
     if (candidatesNum > 0) {
-      ibus.lookupTableSetCursorPos({ cursorPos: candidatesNum - 1, table })
+      table.setCursorPos(candidatesNum - 1)
     }
 
-    ibus.engineUpdateLookupTable({ isVisible: true, table })
+    Engine.updateLookupTable({ isVisible: true, table })
   }
 
   return KeyEventReturn.CustomHandling
@@ -140,7 +144,7 @@ const config = {
 }
 
 const main = () => {
-  ibus.registerHandlers({
+  registerHandlers({
     disable: disableHandler,
     enable: enableHandler,
     focusIn: () => {},
@@ -154,7 +158,7 @@ const main = () => {
     imeName: config.imeName,
   })
 
-  ibus.main()
+  mainIBus()
 
   return Promise.resolve()
 }

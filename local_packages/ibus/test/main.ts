@@ -1,10 +1,20 @@
-// import main from "./engine"
-// import main from "./auxiliary"
-// import main from "./bus"
-// import main from "./lookupTable"
-import main from "./preedit"
+import auxiliary from "./auxiliary"
+import bus from "./bus"
+import engine from "./engine"
+import lookupTable from "./lookupTable"
+import preedit from "./preedit"
+import properties from "./properties"
 
-// import main from "./properties"
+const modules = {
+  auxiliary,
+  bus,
+  engine,
+  lookupTable,
+  preedit,
+  properties,
+}
+
+const { lookupTable: main } = modules
 
 main().catch((error) => {
   console.log("main.ts: error", error)
